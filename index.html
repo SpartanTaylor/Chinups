@@ -101,9 +101,6 @@ function plateCombo(target){
  const T=Math.floor(target*1000+1e-7);
  let best=-1,bestCount=Infinity,bestVec=null;
 
- // The unlimited portion is optimised greedily, then all microplate combinations are checked.
- // Since the large plates are multiples of 0.25/0.5/1.0-ish, exhaustive micro combinations
- // plus greedy large loading gives a practical exact result for the available inventory.
  for(let a=0;a<=2;a++)for(let b=0;b<=2;b++)for(let c=0;c<=2;c++)for(let d=0;d<=2;d++){
    const micros=[a,b,c,d];
    const microSum=Math.round((a*2.2+b*1.1+c*.55+d*.275)*1000);
@@ -122,11 +119,25 @@ function plateCombo(target){
      best=total;bestCount=count;bestVec=vec;
    }
  }
- if(best<=0)return {total:0,plates:"Bodyweight only"};
- const names=[44,33,22,11,5.5,2.75,2.2,1.1,.55,.275];
- const parts=[];
- bestVec.forEach((n,i)=>{if(n>0)parts.push(n===1?`${names[i]} lb`:`${n} × ${names[i]} lb`)});
- return {total:best/1000,plates:parts.join(" + ")};
+ if(best<=0)return {total:0,lbs:"Bodyweight only",kg:"Bodyweight only"};
+
+ const lbs=[44,33,22,11,5.5,2.75,2.2,1.1,0.55,0.275];
+ const kg=[20,15,10,5,2.5,1.25,1,0.5,0.25,0.125];
+
+ const lbParts=[];
+ const kgParts=[];
+ bestVec.forEach((n,i)=>{
+   if(n>0){
+     lbParts.push(n===1?`${lbs[i]}`:`${n} × ${lbs[i]}`);
+     kgParts.push(n===1?`${kg[i]}`:`${n} × ${kg[i]}`);
+   }
+ });
+
+ return {
+   total:best/1000,
+   lbs:lbParts.join(" + "),
+   kg:kgParts.join(" + ")
+ };
 }
 
 function pct(reps,rpe){
@@ -153,9 +164,12 @@ function recalc(){
      const exactAdded=idealTotal-bwbelt;
      const load=plateCombo(exactAdded);
      topText+=`<div><b>Suggested total weight:</b> ${idealTotal.toFixed(2)} lbs</div>`;
-     topText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactAdded).toFixed(2)} lbs)</div>`;
-     topText+=`<div class="big">Suggested weight: ${load.total.toFixed(3)} lb</div>`;
-     topText+=`<div class="plate">Plates: ${load.plates}</div>`;
+     topText+=`<div><b>Exact added weight required:</b> ${Math.max(0,exactAdded).toFixed(2)} lbs</div>`;
+     topText+=`<div class="big">Suggested weight: ${load.total.toFixed(2)} lbs</div>`;
+     topText+=`<div><b>Actual total weight:</b> ${(bwbelt+load.total).toFixed(2)} lbs</div>`;
+     topText+=`<div class="plate">Plates</div>`;
+     topText+=`<div><b>LBS:</b> ${load.lbs}</div>`;
+     topText+=`<div><b>KG:</b> ${load.kg}</div>`;
    }
  }
  document.getElementById("topOutput").innerHTML=topText;
@@ -175,9 +189,12 @@ function recalc(){
      const exactBack=idealBack-bwbelt;
      const backLoad=plateCombo(exactBack);
      let bText=`<div><b>Backoff target total weight:</b> ${idealBack.toFixed(2)} lbs</div>`;
-     bText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactBack).toFixed(2)} lbs)</div>`;
-     bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(3)} lbs</div>`;
-     bText+=`<div class="plate">Plates: ${backLoad.plates}</div>`;
+     bText+=`<div><b>Exact added weight required:</b> ${Math.max(0,exactBack).toFixed(2)} lbs</div>`;
+     bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(2)} lbs</div>`;
+     bText+=`<div><b>Actual total weight:</b> ${(bwbelt+backLoad.total).toFixed(2)} lbs</div>`;
+     bText+=`<div class="plate">Plates</div>`;
+     bText+=`<div><b>LBS:</b> ${backLoad.lbs}</div>`;
+     bText+=`<div><b>KG:</b> ${backLoad.kg}</div>`;
      document.getElementById("backoffOutput").innerHTML=bText;
    }else{
      document.getElementById("backoffOutput").innerHTML="Enter your actual top set, backoff reps and RPE cap.";
@@ -189,10 +206,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v4",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v6",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v4")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v6")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",recalc));
 recalc();
