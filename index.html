@@ -20,6 +20,8 @@ input,select{width:100%;font-size:17px;padding:12px;border:0;border-radius:10px;
 .plate{font-weight:700}
 button{width:100%;padding:12px;border:0;border-radius:10px;background:#444;color:#fff;font-size:16px;margin-top:10px}
 hr{border:0;border-top:1px solid #3a3a3c;margin:15px 0}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 </style>
 </head>
 <body>
@@ -167,7 +169,7 @@ function recalc(){
      topText+=`<div><b>Exact added weight required:</b> ${Math.max(0,exactAdded).toFixed(2)} lbs</div>`;
      topText+=`<div class="big">Suggested weight: ${load.total.toFixed(2)} lbs</div>`;
      topText+=`<div><b>Actual total weight:</b> ${(bwbelt+load.total).toFixed(2)} lbs</div>`;
-     topText+=`<div class="plate">Plates</div>`;
+     topText+=`<br><div class="plate">Plates</div>`;
      topText+=`<div><b>LBS:</b> ${load.lbs}</div>`;
      topText+=`<div><b>KG:</b> ${load.kg}</div>`;
    }
@@ -192,7 +194,7 @@ function recalc(){
      bText+=`<div><b>Exact added weight required:</b> ${Math.max(0,exactBack).toFixed(2)} lbs</div>`;
      bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(2)} lbs</div>`;
      bText+=`<div><b>Actual total weight:</b> ${(bwbelt+backLoad.total).toFixed(2)} lbs</div>`;
-     bText+=`<div class="plate">Plates</div>`;
+     bText+=`<br><div class="plate">Plates</div>`;
      bText+=`<div><b>LBS:</b> ${backLoad.lbs}</div>`;
      bText+=`<div><b>KG:</b> ${backLoad.kg}</div>`;
      document.getElementById("backoffOutput").innerHTML=bText;
@@ -206,10 +208,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v6",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v7",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v6")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v7")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",recalc));
 recalc();
