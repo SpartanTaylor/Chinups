@@ -244,19 +244,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   border:1px solid rgba(0,0,0,.3);
 }
 .plate-block:first-child{margin-left:0}
-.plate-block::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:12px;
-  height:28px;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:#d4d4d4;
-  box-shadow:inset 0 0 0 3px #777;
-  z-index:1;
-}
+.plate-block::before{display:none}
 .plate-block span{
   position:relative;
   z-index:2;
@@ -456,8 +444,9 @@ function plateVisual(load){
 }
 
 function outputRow(label,value,key=false,gold=false,copy=false){
+ const numericCopy=String(value).match(/-?\d+(?:\.\d+)?/)?.[0] ?? String(value);
  const valueHtml=copy
-  ? `<span class="copy-wrap"><span class="output-value">${value}</span><button class="copy-btn" type="button" aria-label="Copy ${label}" onclick="copyOutput(this,'${value.replace(/'/g,"&#39;")}')">⧉</button></span>`
+  ? `<span class="copy-wrap"><span class="output-value">${value}</span><button class="copy-btn" type="button" aria-label="Copy ${label}" onclick="copyOutput(this,'${numericCopy}')">⧉</button></span>`
   : `<span class="output-value">${value}</span>`;
  return `<div class="output-row${key?" key":""}${gold?" gold":""}"><span class="output-label">${label}</span>${valueHtml}</div>`;
 }
@@ -556,10 +545,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v10",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v11",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v10")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v11")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
