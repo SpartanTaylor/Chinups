@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
-<title>Strength</title>
+<title>Weighted Chinup Calculator</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#111;color:#f4f4f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
@@ -24,8 +24,7 @@ hr{border:0;border-top:1px solid #3a3a3c;margin:15px 0}
 </head>
 <body>
 <main>
-<h1>Strength</h1>
-<div class="sub">Weighted chin-up autoregulation</div>
+<h1>Weighted Chinup Calculator</h1>
 
 <div class="card">
 <h2>Daily Inputs</h2>
@@ -49,14 +48,9 @@ hr{border:0;border-top:1px solid #3a3a3c;margin:15px 0}
 <label>Actual Top Set RIR / RPE<select id="actualRpe"></select></label>
 <div class="result" id="e1rmOutput">Enter your actual top set.</div>
 <hr>
-<label>Backoff % of Session e1RM<input id="backoffPct" type="number" min="0" max="100" step="0.1" value="72" inputmode="decimal"></label>
 <label>Backoff Reps<input id="backoffReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-<div class="result" id="backoffOutput">Enter your actual top set and backoff percentage.</div>
-</div>
-
-<div class="card">
-<h2>Plate Inventory</h2>
-<div class="muted">Unlimited: 44, 33, 22, 11, 5.5, 2.75 lb. Limited to 2 each: 2.2, 1.1, 0.55, 0.275 lb.</div>
+<label>Backoff RIR / RPE Cap<select id="backoffRpe"></select></label>
+<div class="result" id="backoffOutput">Enter your actual top set, backoff reps and RPE cap.</div>
 </div>
 </main>
 
@@ -95,7 +89,7 @@ function fillSelect(id){
   const o=document.createElement("option");o.value=val;o.textContent=label;s.appendChild(o);
  });
 }
-["feelerRpe","targetRpe","actualRpe"].forEach(fillSelect);
+["feelerRpe","targetRpe","actualRpe","backoffRpe"].forEach(fillSelect);
 
 // Inventory: unlimited larger plates, max 2 microplates each.
 const unlimited=[44,33,22,11,5.5,2.75];
@@ -153,13 +147,13 @@ function recalc(){
  let topText="Enter your feeler set and target.";
  if(fp && bw>0){
    const feelerE1rm=bw/fp;
-   topText=`<div><b>Feeler-set estimated 1RM:</b> ${feelerE1rm.toFixed(1)} lb</div>`;
    if(tp && bwbelt>0){
+     topText="";
      const idealTotal=feelerE1rm*tp;
      const exactAdded=idealTotal-bwbelt;
      const load=plateCombo(exactAdded);
-     topText+=`<div><b>Suggested total weight:</b> ${idealTotal.toFixed(1)} lb</div>`;
-     topText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactAdded).toFixed(3)} lb)</div>`;
+     topText+=`<div><b>Suggested total weight:</b> ${idealTotal.toFixed(2)} lbs</div>`;
+     topText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactAdded).toFixed(2)} lbs)</div>`;
      topText+=`<div class="big">Suggested weight: ${load.total.toFixed(3)} lb</div>`;
      topText+=`<div class="plate">Plates: ${load.plates}</div>`;
    }
@@ -171,31 +165,34 @@ function recalc(){
  if(ap && bwbelt>0 && !isNaN(al)){
    const actualTotal=bwbelt+al;
    const e1rm=actualTotal/ap;
-   eText=`<div class="big">Session e1RM: ${e1rm.toFixed(1)} lb</div>`;
+   eText=`<div class="big">Session e1RM: ${e1rm.toFixed(2)} lbs</div>`;
    document.getElementById("e1rmOutput").innerHTML=eText;
 
-   const bp=val("backoffPct")/100;
-   const idealBack=e1rm*bp;
-   const exactBack=idealBack-bwbelt;
-   const backLoad=plateCombo(exactBack);
-   let bText=`<div><b>Backoff target total weight:</b> ${idealBack.toFixed(1)} lb</div>`;
-   bText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactBack).toFixed(3)} lb)</div>`;
-   bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(3)} lb</div>`;
-   bText+=`<div class="plate">Plates: ${backLoad.plates}</div>`;
-   const br=document.getElementById("backoffReps").value;
-   if(br)bText+=`<div class="muted">Planned backoff reps: ${br}</div>`;
-   document.getElementById("backoffOutput").innerHTML=bText;
+   const br=parseInt(document.getElementById("backoffReps").value);
+   const backoffPct=pct(br,val("backoffRpe"));
+   if(backoffPct){
+     const idealBack=e1rm*backoffPct;
+     const exactBack=idealBack-bwbelt;
+     const backLoad=plateCombo(exactBack);
+     let bText=`<div><b>Backoff target total weight:</b> ${idealBack.toFixed(2)} lbs</div>`;
+     bText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactBack).toFixed(2)} lbs)</div>`;
+     bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(3)} lbs</div>`;
+     bText+=`<div class="plate">Plates: ${backLoad.plates}</div>`;
+     document.getElementById("backoffOutput").innerHTML=bText;
+   }else{
+     document.getElementById("backoffOutput").innerHTML="Enter your actual top set, backoff reps and RPE cap.";
+   }
  }else{
    document.getElementById("e1rmOutput").innerHTML=eText;
-   document.getElementById("backoffOutput").innerHTML="Enter your actual top set and backoff percentage.";
+   document.getElementById("backoffOutput").innerHTML="Enter your actual top set, backoff reps and RPE cap.";
  }
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("strength-v2",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v4",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("strength-v2")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v4")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",recalc));
 recalc();

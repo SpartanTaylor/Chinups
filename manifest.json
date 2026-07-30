@@ -1,6 +1,6 @@
 {
-  "name": "Strength",
-  "short_name": "Strength",
+  "name": "Weighted Chinup Calculator",
+  "short_name": "Chinup Calculator",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#111111",
