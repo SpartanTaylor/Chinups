@@ -1,287 +1,205 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Strength</title>
-<link rel="manifest" href="manifest.json">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.json">
+<title>Strength</title>
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background:#111;
-    color:#f5f5f5;
-    margin:0;
-    padding:16px;
-}
-.container{
-    max-width:700px;
-    margin:auto;
-}
-.section{
-    background:#1d1d1d;
-    padding:16px;
-    margin-bottom:16px;
-    border-radius:12px;
-}
-h1,h2{
-    margin-top:0;
-}
-label{
-    display:block;
-    margin-top:10px;
-}
-input,select{
-    width:100%;
-    padding:10px;
-    margin-top:4px;
-    border-radius:8px;
-    border:none;
-    font-size:16px;
-}
-.output{
-    margin-top:10px;
-    padding:10px;
-    background:#2a2a2a;
-    border-radius:8px;
-}
-.small{
-    font-size:14px;
-    opacity:0.9;
-}
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#f4f4f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+main{max-width:720px;margin:auto;padding:18px 14px 40px}
+h1{font-size:30px;margin:4px 0 6px}.sub{opacity:.7;margin-bottom:20px}
+.card{background:#1c1c1e;border-radius:16px;padding:16px;margin:12px 0}
+h2{font-size:20px;margin:0 0 12px}
+label{display:block;font-size:14px;margin:12px 0 5px;opacity:.9}
+input,select{width:100%;font-size:17px;padding:12px;border:0;border-radius:10px;background:#2c2c2e;color:#fff}
+.result{margin-top:12px;padding:12px;background:#2c2c2e;border-radius:10px;line-height:1.55}
+.big{font-size:19px;font-weight:700}.muted{opacity:.7;font-size:13px}
+.plate{font-weight:700}
+button{width:100%;padding:12px;border:0;border-radius:10px;background:#444;color:#fff;font-size:16px;margin-top:10px}
+hr{border:0;border-top:1px solid #3a3a3c;margin:15px 0}
 </style>
 </head>
 <body>
-<div class="container">
+<main>
 <h1>Strength</h1>
+<div class="sub">Weighted chin-up autoregulation</div>
 
-<div class="section">
+<div class="card">
 <h2>Daily Inputs</h2>
-
-<label>Bodyweight
-<input type="number" id="bw" step="0.1">
-</label>
-
-<label>Bodyweight + Belt
-<input type="number" id="bwbelt" step="0.1">
-</label>
+<label>Bodyweight (lbs)<input id="bw" type="number" step="0.1" inputmode="decimal"></label>
+<label>Bodyweight + Belt (lbs)<input id="bwbelt" type="number" step="0.1" inputmode="decimal"></label>
 </div>
 
-<div class="section">
-<h2>Feeler Set</h2>
-
-<label>Reps
-<input type="number" id="feelerReps">
-</label>
-
-<label>RPE
-<select id="feelerRpe"></select>
-</label>
-
-<label>Target Reps
-<input type="number" id="targetReps">
-</label>
-
-<label>Target RPE
-<select id="targetRpe"></select>
-</label>
-
-<div class="output">
-<div id="feelerE1rm"></div>
-<div id="topSuggestion"></div>
-<div id="topExternal"></div>
-<div id="topPlates"></div>
-</div>
+<div class="card">
+<h2>Feeler Set → Top Set Recommendation</h2>
+<label>Feeler Set Reps<input id="feelerReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+<label>Feeler Set RIR / RPE<select id="feelerRpe"></select></label>
+<label>Target Top Set Reps<input id="targetReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+<label>Target Top Set RIR / RPE<select id="targetRpe"></select></label>
+<div class="result" id="topOutput">Enter your feeler set and target.</div>
 </div>
 
-<div class="section">
-<h2>Top Set Performed</h2>
-
-<label>Actual Added Weight
-<input type="number" id="actualLoad" step="0.1">
-</label>
-
-<label>Actual Reps
-<input type="number" id="actualReps">
-</label>
-
-<label>Actual RPE
-<select id="actualRpe"></select>
-</label>
-
-<div class="output">
-<div id="updatedE1rm"></div>
-</div>
+<div class="card">
+<h2>Actual Top Set → Backoff Recommendation</h2>
+<label>Actual Added Weight (lbs)<input id="actualLoad" type="number" min="0" step="0.001" inputmode="decimal"></label>
+<label>Actual Top Set Reps<input id="actualReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+<label>Actual Top Set RIR / RPE<select id="actualRpe"></select></label>
+<div class="result" id="e1rmOutput">Enter your actual top set.</div>
+<hr>
+<label>Backoff % of Session e1RM<input id="backoffPct" type="number" min="0" max="100" step="0.1" value="72" inputmode="decimal"></label>
+<label>Backoff Reps<input id="backoffReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+<div class="result" id="backoffOutput">Enter your actual top set and backoff percentage.</div>
 </div>
 
-<div class="section">
-<h2>Backoff Sets</h2>
-
-<label>Backoff %
-<input type="number" id="backoffPct" value="72">
-</label>
-
-<label>Backoff Reps
-<input type="number" id="backoffReps">
-</label>
-
-<div class="output">
-<div id="backoffTotal"></div>
-<div id="backoffExternal"></div>
-<div id="backoffPlates"></div>
+<div class="card">
+<h2>Plate Inventory</h2>
+<div class="muted">Unlimited: 44, 33, 22, 11, 5.5, 2.75 lb. Limited to 2 each: 2.2, 1.1, 0.55, 0.275 lb.</div>
 </div>
-</div>
-
-</div>
+</main>
 
 <script>
-const plateOptions = [44,33,22,11,5.5,2.75,2.2,1.1,0.55,0.275];
+const rpeLabels=[
+["0 RIR / RPE 10",10],["0.5 RIR / RPE 9.5",9.5],["1 RIR / RPE 9",9],
+["1.5 RIR / RPE 8.5",8.5],["2 RIR / RPE 8",8],["2.5 RIR / RPE 7.5",7.5],
+["3 RIR / RPE 7",7],["3.5 RIR / RPE 6.5",6.5],["4 RIR / RPE 6",6],
+["4.5 RIR / RPE 5.5",5.5],["5 RIR / RPE 5",5],["5.5 RIR / RPE 4.5",4.5],
+["6 RIR / RPE 4",4],["6.5 RIR / RPE 3.5",3.5],["7 RIR / RPE 3",3],
+["7.5 RIR / RPE 2.5",2.5],["8 RIR / RPE 2",2],["8.5 RIR / RPE 1.5",1.5],
+["9 RIR / RPE 1",1]
+];
 
-const rpeTable = {
-"1@10":1.00,"1@9.5":0.978,"1@9":0.955,"1@8.5":0.939,"1@8":0.922,"1@7.5":0.907,"1@7":0.892,"1@6.5":0.878,
-"2@10":0.955,"2@9.5":0.939,"2@9":0.922,"2@8.5":0.907,"2@8":0.892,"2@7.5":0.878,"2@7":0.863,"2@6.5":0.850,
-"3@10":0.922,"3@9.5":0.907,"3@9":0.892,"3@8.5":0.878,"3@8":0.863,"3@7.5":0.850,"3@7":0.837,"3@6.5":0.824,
-"4@10":0.892,"4@9.5":0.878,"4@9":0.863,"4@8.5":0.850,"4@8":0.837,"4@7.5":0.824,"4@7":0.811,"4@6.5":0.798,
-"5@10":0.863,"5@9.5":0.850,"5@9":0.837,"5@8.5":0.824,"5@8":0.811,"5@7.5":0.798,"5@7":0.786,"5@6.5":0.774,
-"6@10":0.837,"6@9.5":0.824,"6@9":0.811,"6@8.5":0.798,"6@8":0.786,"6@7.5":0.774,"6@7":0.762,"6@6.5":0.750,
-"7@10":0.811,"7@9.5":0.798,"7@9":0.786,"7@8.5":0.774,"7@8":0.762,"7@7.5":0.750,"7@7":0.739,"7@6.5":0.723,
-"8@10":0.786,"8@9.5":0.774,"8@9":0.762,"8@8.5":0.750,"8@8":0.739,"8@7.5":0.723,"8@7":0.707,"8@6.5":0.694,
-"9@10":0.762,"9@9.5":0.750,"9@9":0.739,"9@8.5":0.723,"9@8":0.707,"9@7.5":0.694,"9@7":0.680,"9@6.5":0.667,
-"10@10":0.739,"10@9.5":0.723,"10@9":0.707,"10@8.5":0.694,"10@8":0.680,"10@7.5":0.667,"10@7":0.653,"10@6.5":0.640,
-"11@10":0.707,"11@9.5":0.694,"11@9":0.680,"11@8.5":0.667,"11@8":0.653,"11@7.5":0.640,"11@7":0.626,"11@6.5":0.613,
-"12@10":0.680,"12@9.5":0.667,"12@9":0.653,"12@8.5":0.640,"12@8":0.626,"12@7.5":0.613,"12@7":0.600,"12@6.5":0.586
+// User-provided chart. Values are percentages, not decimals.
+const chart={
+1:[100,97.8,95.5,93,91,89,87,85,83,81,79,77,75,73,71,69,67,65,63],
+2:[95.5,93.5,91,89,87,85,83,81,79,77,75,73,71,69,67,65,63,61,59],
+3:[92.2,90,87.5,85.5,83.5,81.5,79.5,77.5,75.5,73.5,71.5,69.5,67.5,65.5,63.5,61.5,59.5,57.5,55.5],
+4:[89.2,87,84.5,82.5,80.5,78.5,76.5,74.5,72.5,70.5,68.5,66.5,64.5,62.5,60.5,58.5,56.5,54.5,52.5],
+5:[86.3,84,81.5,79.5,77.5,75.5,73.5,71.5,69.5,67.5,65.5,63.5,61.5,59.5,57.5,55.5,53.5,51.5,49.5],
+6:[83.7,81.5,79,77,75,73,71,69,67,65,63,61,59,57,55,53,51,49,47],
+7:[81.1,79.5,76.5,75,73,71,69,67,65,63,61,59,57,55,53,51,49,47,45],
+8:[78.6,76.5,74,72,70,68,66,64,62,60,58,56,54,52,50,48,46,44,42],
+9:[76.2,74,71.5,69.5,67.5,65.5,63.5,61.5,59.5,57.5,55.5,53.5,51.5,49.5,47.5,45.5,43.5,41.5,39.5],
+10:[73.9,71.5,69,67,65,63,61,59,57,55,53,51,49,47,45,43,41,39,37],
+11:[71.8,69.5,67,65,63,61,59,57,55,53,51,49,47,45,43,41,39,37,35],
+12:[69.8,67.5,65,63,61,59,57,55,53,51,49,47,45,43,41,39,37,35,33]
 };
 
-const rpes = [10,9.5,9,8.5,8,7.5,7,6.5];
+const rpes=[10,9.5,9,8.5,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1];
 
-function populateRPE(id){
-    const sel = document.getElementById(id);
-    rpes.forEach(r=>{
-        const opt=document.createElement("option");
-        opt.value=r;
-        opt.text=r;
-        sel.appendChild(opt);
-    });
+function fillSelect(id){
+ const s=document.getElementById(id);
+ rpeLabels.forEach(([label,val])=>{
+  const o=document.createElement("option");o.value=val;o.textContent=label;s.appendChild(o);
+ });
+}
+["feelerRpe","targetRpe","actualRpe"].forEach(fillSelect);
+
+// Inventory: unlimited larger plates, max 2 microplates each.
+const unlimited=[44,33,22,11,5.5,2.75];
+const micro=[2.2,1.1,0.55,0.275];
+
+function plateCombo(target){
+ target=Math.max(0,target);
+ // Work in thousandths to avoid floating-point issues.
+ const T=Math.floor(target*1000+1e-7);
+ let best=-1,bestCount=Infinity,bestVec=null;
+
+ // The unlimited portion is optimised greedily, then all microplate combinations are checked.
+ // Since the large plates are multiples of 0.25/0.5/1.0-ish, exhaustive micro combinations
+ // plus greedy large loading gives a practical exact result for the available inventory.
+ for(let a=0;a<=2;a++)for(let b=0;b<=2;b++)for(let c=0;c<=2;c++)for(let d=0;d<=2;d++){
+   const micros=[a,b,c,d];
+   const microSum=Math.round((a*2.2+b*1.1+c*.55+d*.275)*1000);
+   if(microSum>T) continue;
+   let rem=T-microSum;
+   const counts=[];
+   let n=0;
+   for(const p of unlimited){
+     const q=Math.floor(rem/Math.round(p*1000));
+     counts.push(q); n+=q; rem-=q*Math.round(p*1000);
+   }
+   const total=T-rem;
+   const vec=[...counts,...micros];
+   const count=n+a+b+c+d;
+   if(total>best || (total===best && count<bestCount)){
+     best=total;bestCount=count;bestVec=vec;
+   }
+ }
+ if(best<=0)return {total:0,plates:"Bodyweight only"};
+ const names=[44,33,22,11,5.5,2.75,2.2,1.1,.55,.275];
+ const parts=[];
+ bestVec.forEach((n,i)=>{if(n>0)parts.push(n===1?`${names[i]} lb`:`${n} × ${names[i]} lb`)});
+ return {total:best/1000,plates:parts.join(" + ")};
 }
 
-populateRPE("feelerRpe");
-populateRPE("targetRpe");
-populateRPE("actualRpe");
-
-function roundDownPlates(target){
-    let remaining = Math.max(0,target);
-    const used=[];
-
-    for(let p of plateOptions){
-        while(remaining + 1e-9 >= p){
-            used.push(p);
-            remaining -= p;
-        }
-    }
-
-    const total = used.reduce((a,b)=>a+b,0);
-
-    return {
-        total: total,
-        plates: used.length ? used.join(" + ") : "Bodyweight only"
-    };
+function pct(reps,rpe){
+ if(!chart[reps])return null;
+ const i=rpes.indexOf(Number(rpe));
+ return i<0?null:chart[reps][i]/100;
 }
 
-function getPct(reps,rpe){
-    return rpeTable[`${reps}@${rpe}`];
-}
+function val(id){return parseFloat(document.getElementById(id).value)}
 
 function recalc(){
+ const bw=val("bw"),bwbelt=val("bwbelt");
+ const fr=parseInt(document.getElementById("feelerReps").value);
+ const fp=pct(fr,val("feelerRpe"));
+ const tr=parseInt(document.getElementById("targetReps").value);
+ const tp=pct(tr,val("targetRpe"));
 
-    const bw = parseFloat(document.getElementById("bw").value)||0;
-    const bwbelt = parseFloat(document.getElementById("bwbelt").value)||0;
+ let topText="Enter your feeler set and target.";
+ if(fp && bw>0){
+   const feelerE1rm=bw/fp;
+   topText=`<div><b>Feeler-set estimated 1RM:</b> ${feelerE1rm.toFixed(1)} lb</div>`;
+   if(tp && bwbelt>0){
+     const idealTotal=feelerE1rm*tp;
+     const exactAdded=idealTotal-bwbelt;
+     const load=plateCombo(exactAdded);
+     topText+=`<div><b>Suggested total weight:</b> ${idealTotal.toFixed(1)} lb</div>`;
+     topText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactAdded).toFixed(3)} lb)</div>`;
+     topText+=`<div class="big">Suggested weight: ${load.total.toFixed(3)} lb</div>`;
+     topText+=`<div class="plate">Plates: ${load.plates}</div>`;
+   }
+ }
+ document.getElementById("topOutput").innerHTML=topText;
 
-    const feelerReps = parseInt(document.getElementById("feelerReps").value)||0;
-    const feelerRpe = document.getElementById("feelerRpe").value;
+ const al=val("actualLoad"),ar=parseInt(document.getElementById("actualReps").value),ap=pct(ar,val("actualRpe"));
+ let eText="Enter your actual top set.";
+ if(ap && bwbelt>0 && !isNaN(al)){
+   const actualTotal=bwbelt+al;
+   const e1rm=actualTotal/ap;
+   eText=`<div class="big">Session e1RM: ${e1rm.toFixed(1)} lb</div>`;
+   document.getElementById("e1rmOutput").innerHTML=eText;
 
-    const targetReps = parseInt(document.getElementById("targetReps").value)||0;
-    const targetRpe = document.getElementById("targetRpe").value;
+   const bp=val("backoffPct")/100;
+   const idealBack=e1rm*bp;
+   const exactBack=idealBack-bwbelt;
+   const backLoad=plateCombo(exactBack);
+   let bText=`<div><b>Backoff target total weight:</b> ${idealBack.toFixed(1)} lb</div>`;
+   bText+=`<div><b>Exact added weight required:</b> (${Math.max(0,exactBack).toFixed(3)} lb)</div>`;
+   bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(3)} lb</div>`;
+   bText+=`<div class="plate">Plates: ${backLoad.plates}</div>`;
+   const br=document.getElementById("backoffReps").value;
+   if(br)bText+=`<div class="muted">Planned backoff reps: ${br}</div>`;
+   document.getElementById("backoffOutput").innerHTML=bText;
+ }else{
+   document.getElementById("e1rmOutput").innerHTML=eText;
+   document.getElementById("backoffOutput").innerHTML="Enter your actual top set and backoff percentage.";
+ }
 
-    const feelerPct = getPct(feelerReps,feelerRpe);
-
-    if(feelerPct){
-        const e1rm = bw / feelerPct;
-
-        document.getElementById("feelerE1rm").innerHTML =
-        `<strong>Estimated 1RM:</strong> ${e1rm.toFixed(1)} lbs`;
-
-        const targetPct = getPct(targetReps,targetRpe);
-
-        if(targetPct){
-            const targetTotal = e1rm * targetPct;
-            const extLoad = Math.max(0,targetTotal - bwbelt);
-
-            const rounded = roundDownPlates(extLoad);
-
-            document.getElementById("topSuggestion").innerHTML =
-            `<strong>Suggested Total Weight:</strong> ${targetTotal.toFixed(1)} lbs`;
-
-            document.getElementById("topExternal").innerHTML =
-            `<strong>Suggested Added Weight:</strong> ${rounded.total.toFixed(3)} lbs`;
-
-            document.getElementById("topPlates").innerHTML =
-            `<strong>Plates:</strong> ${rounded.plates}`;
-        }
-    }
-
-    const actualLoad = parseFloat(document.getElementById("actualLoad").value)||0;
-    const actualReps = parseInt(document.getElementById("actualReps").value)||0;
-    const actualRpe = document.getElementById("actualRpe").value;
-
-    const actualPct = getPct(actualReps,actualRpe);
-
-    if(actualPct){
-        const actualTotal = bwbelt + actualLoad;
-        const updated = actualTotal / actualPct;
-
-        document.getElementById("updatedE1rm").innerHTML =
-        `<strong>Updated Session e1RM:</strong> ${updated.toFixed(1)} lbs`;
-
-        const backoffPct = (parseFloat(document.getElementById("backoffPct").value)||0)/100;
-
-        const backoffTotal = updated * backoffPct;
-        const backoffExt = Math.max(0,backoffTotal - bwbelt);
-
-        const roundedBackoff = roundDownPlates(backoffExt);
-
-        document.getElementById("backoffTotal").innerHTML =
-        `<strong>Backoff Total Weight:</strong> ${backoffTotal.toFixed(1)} lbs`;
-
-        document.getElementById("backoffExternal").innerHTML =
-        `<strong>Backoff Added Weight:</strong> ${roundedBackoff.total.toFixed(3)} lbs`;
-
-        document.getElementById("backoffPlates").innerHTML =
-        `<strong>Backoff Plates:</strong> ${roundedBackoff.plates}`;
-    }
-
-    localStorage.setItem("strengthData", JSON.stringify({
-        bw,bwbelt,feelerReps,feelerRpe,targetReps,targetRpe,
-        actualLoad,actualReps,actualRpe,
-        backoffPct:document.getElementById("backoffPct").value
-    }));
+ const data={};
+ document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
+ localStorage.setItem("strength-v2",JSON.stringify(data));
 }
 
-document.querySelectorAll("input,select").forEach(el=>{
-    el.addEventListener("input",recalc);
-});
-
-const saved = JSON.parse(localStorage.getItem("strengthData")||"{}");
-
-Object.keys(saved).forEach(k=>{
-    const el=document.getElementById(k);
-    if(el){ el.value=saved[k]; }
-});
-
+const saved=JSON.parse(localStorage.getItem("strength-v2")||"{}");
+Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
+document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",recalc));
 recalc();
-
-if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("sw.js");
-}
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 </script>
 </body>
 </html>
