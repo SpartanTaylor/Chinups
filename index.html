@@ -8,310 +8,408 @@
 <title>Weighted Chinup Calculator</title>
 <style>
 :root{
-  --bg:#111111;
-  --card:#1c1c1e;
-  --field:#2c2c2e;
-  --line:#3a3a3c;
-  --text:#f4f4f4;
-  --muted:#a9a9ae;
-  --gold:#f2c94c;
+  --bg:#09090a;
+  --panel:#151516;
+  --panel-2:#1b1b1d;
+  --field:#202023;
+  --line:#4a4a4d;
+  --text:#f5f5f7;
+  --muted:#b7b7bc;
+  --gold:#f5c535;
+  --blue:#1789ff;
+  --purple:#d33cff;
 }
 *{box-sizing:border-box}
+html{background:var(--bg)}
 body{
   margin:0;
-  background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 50% -12%,#1a1a1c 0,#0d0d0e 33%,#080809 72%);
+  min-height:100vh;
 }
-main{max-width:720px;margin:auto;padding:20px 14px 44px}
-h1{font-size:30px;line-height:1.1;margin:4px 0 18px;font-weight:800;letter-spacing:-.4px}
-.card{background:var(--card);border-radius:18px;padding:18px;margin:14px 0}
-h2{font-size:20px;line-height:1.2;margin:0 0 14px;font-weight:750;letter-spacing:-.15px}
+button,input,select{font:inherit}
+.app-shell{
+  width:min(100%,820px);
+  margin:0 auto;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 8px calc(18px + env(safe-area-inset-bottom,0px));
+}
+.app-bar{
+  display:grid;
+  grid-template-columns:52px 1fr 52px;
+  align-items:center;
+  min-height:72px;
+  margin-bottom:4px;
+}
+.app-title{
+  text-align:center;
+  font-size:clamp(21px,4.8vw,30px);
+  font-weight:800;
+  letter-spacing:-.6px;
+  white-space:nowrap;
+}
+.nav-icon,.gear-icon{
+  width:48px;height:48px;
+  display:flex;align-items:center;justify-content:center;
+  border:0;background:transparent;color:var(--blue);
+  padding:0;
+}
+.nav-icon{flex-direction:column;gap:5px}
+.nav-icon span{
+  display:block;width:31px;height:3px;border-radius:4px;background:var(--blue)
+}
+.gear-icon{font-size:36px;line-height:1}
+.app-card{
+  margin:10px 0;
+  padding:16px 16px 18px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:10px;
+  background:
+    linear-gradient(180deg,rgba(26,26,28,.97),rgba(16,16,17,.98));
+  box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025);
+}
+.section-heading{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:8px;
+}
+.section-heading h2{
+  margin:0;
+  font-size:clamp(16px,3.55vw,23px);
+  line-height:1.15;
+  font-weight:800;
+  letter-spacing:-.25px;
+  text-transform:uppercase;
+}
+.section-icon{
+  width:42px;height:42px;flex:none;
+  display:grid;place-items:center;
+  border-radius:50%;
+  font-weight:800;
+}
+.target-icon{
+  color:var(--blue);
+  border:2px solid var(--blue);
+  font-size:29px;
+  line-height:1;
+}
+.chart-icon{
+  color:var(--purple);
+  background:rgba(211,60,255,.16);
+  font-size:26px;
+}
+.input-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 16px;
+}
+.actual-grid label:first-child{grid-column:1/-1}
 label{
   display:block;
-  font-size:14px;
-  font-weight:600;
-  margin:15px 0 6px;
-  color:#d7d7da;
+  margin:12px 0 5px;
+  color:#efeff2;
+  font-size:clamp(13px,3.25vw,18px);
+  font-weight:500;
+  line-height:1.2;
 }
 input,select{
   width:100%;
-  min-height:50px;
-  font-size:18px;
-  padding:13px 14px;
-  border:1px solid transparent;
-  border-radius:12px;
-  background:var(--field);
+  height:58px;
+  padding:0 15px;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;
   color:#fff;
+  background:linear-gradient(180deg,#242426,#1b1b1d);
   outline:none;
+  font-size:clamp(17px,4.2vw,23px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
 }
-input:focus,select:focus{border-color:var(--gold)}
-.result{
-  margin-top:15px;
-  padding:14px;
-  background:var(--field);
-  border-radius:12px;
-  line-height:1.4;
+select{
+  appearance:none;
+  -webkit-appearance:none;
+  padding-right:43px;
+  background-image:
+    linear-gradient(45deg,transparent 50%,#b9b9bd 50%),
+    linear-gradient(135deg,#b9b9bd 50%,transparent 50%),
+    linear-gradient(180deg,#242426,#1b1b1d);
+  background-position:
+    calc(100% - 23px) 25px,
+    calc(100% - 16px) 25px,
+    0 0;
+  background-size:7px 7px,7px 7px,100% 100%;
+  background-repeat:no-repeat;
 }
-.output-group{display:grid;gap:4px}
-.output-row{
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:14px;
-  min-height:25px;
+input:focus,select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 2px rgba(23,137,255,.18);
 }
-.output-label{color:var(--muted);font-size:14px;font-weight:600}
-.output-value{color:var(--text);font-size:16px;font-weight:750;text-align:right;white-space:nowrap}
-.output-row.gold .output-value{color:var(--gold)}
-.output-row.key .output-label{color:#e4e4e7;font-size:15px}
-.output-row.key .output-value{font-size:20px;font-weight:850}
-.output-divider{height:1px;background:var(--line);margin:10px 0 8px}
-.plates-heading{font-weight:800;font-size:16px;margin:14px 0 5px}
-.plate-lines{display:grid;gap:3px}
-.plate-unit{color:var(--muted);font-weight:750;margin-right:5px}
-.plate-text{color:var(--gold);font-weight:700}
-.muted{color:var(--muted);font-size:13px}
-hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
-
-/* Compact visual belt/plate display inspired by the supplied reference. */
-.plate-visual{
-  position:relative;
-  margin-top:12px;
-  min-height:230px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  padding:14px 8px 10px;
-  border-radius:10px;
-  background:#f7f7f7;
-  color:#111;
+.section-rule,.output-divider{
+  height:1px;background:rgba(255,255,255,.28);margin:18px 0 12px
 }
-.plate-summary{
+.result{
+  margin-top:18px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--muted);
+  line-height:1.4;
+}
+.integrated-result{
+  border-top:1px solid rgba(255,255,255,.28);
+  padding-top:13px;
+}
+.compact-result{margin-top:14px}
+.output-group{display:grid;gap:0}
+.output-row{
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  padding:0 6px 8px;
-  font-size:15px;
-  font-weight:750;
+  gap:12px;
+  min-height:47px;
+}
+.output-label{
+  color:#f1f1f3;
+  font-size:clamp(14px,3.55vw,20px);
+  font-weight:500;
+}
+.output-value{
+  color:var(--text);
+  font-size:clamp(16px,3.9vw,22px);
+  font-weight:650;
+  text-align:right;
+  white-space:nowrap;
+}
+.output-row.key .output-label{font-size:clamp(15px,3.65vw,21px)}
+.output-row.key .output-value{font-size:clamp(20px,4.8vw,27px);font-weight:800}
+.output-row.gold .number-part{color:var(--gold)}
+.output-row.gold .unit-part{color:var(--text);font-size:.78em;margin-left:4px}
+.copy-wrap{display:inline-flex;align-items:center;justify-content:flex-end;gap:10px}
+.copy-btn{
+  width:42px;height:42px;min-height:0;flex:none;
+  display:grid;place-items:center;
+  padding:0;margin:0;
+  border:1.5px solid var(--blue);
+  border-radius:9px;
+  background:rgba(23,137,255,.03);
+  color:var(--blue);
+  font-size:22px;line-height:1;
+}
+.copy-btn:active{transform:scale(.96)}
+.copy-btn.copied{border-color:var(--gold);color:var(--gold)}
+.plates-heading{display:none}
+.plate-lines{display:none}
+.plate-visual{
+  margin-top:10px;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  color:#fff;
+  overflow:hidden;
+}
+.visual-set{margin-top:12px}
+.visual-heading{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:12px;
+  align-items:center;
+  margin:4px 0 8px;
+  font-size:clamp(13px,3.3vw,17px);
+  font-weight:800;
+  text-transform:uppercase;
+}
+.visual-heading::before,.visual-heading::after{
+  content:"";height:1px;background:rgba(255,255,255,.27)
 }
 .belt-stage{
-  position:relative;
   display:flex;
   align-items:center;
   min-width:max-content;
-  height:170px;
-  padding:0 14px 0 8px;
-}
-.belt-loop{
-  width:46px;height:88px;border:7px solid #8e8e93;border-left:0;border-radius:0 24px 24px 0;flex:none
-}
-.belt-strap{width:44px;height:58px;background:#242424;flex:none}
-.plate-stack{display:flex;align-items:center;gap:3px;flex:none}
-.plate-block{
-  min-width:34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:15px;
-  font-weight:800;
-  border-radius:1px;
+  height:164px;
   padding:0 4px;
 }
-.chain{
+.belt-wrap{
   position:relative;
-  width:190px;
-  height:10px;
-  background:#858585;
-  margin-left:10px;
-  flex:none;
-  border-radius:5px;
-}
-.chain::before,
-.chain::after{
-  content:"";
-  position:absolute;
-  top:-13px;
-  width:28px;
-  height:34px;
-  border:6px solid #858585;
-  border-radius:14px;
-}
-.chain::before{left:18px}
-.chain::after{left:78px}
-
-
-.ios-titlebar{
-  position:sticky;
-  top:0;
-  z-index:20;
-  margin:-20px -14px 14px;
-  padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;
-  background:rgba(17,17,17,.92);
-  -webkit-backdrop-filter:blur(18px);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-.ios-title{
-  text-align:center;
-  font-size:17px;
-  font-weight:750;
-  letter-spacing:-.15px;
-}
-.copy-wrap{
-  display:inline-flex;
+  display:flex;
   align-items:center;
-  justify-content:flex-end;
-  gap:8px;
-}
-.copy-btn{
   flex:none;
-  width:30px;
-  height:30px;
-  min-height:0;
-  padding:0;
-  margin:0;
-  border:0;
-  border-radius:8px;
-  background:#3a3a3c;
-  color:#fff;
-  font-size:15px;
-  line-height:1;
-  cursor:pointer;
-}
-.copy-btn:active{transform:scale(.96)}
-.copy-btn.copied{background:#5b4a16;color:var(--gold)}
-.result.has-output{animation:sectionFade .22s ease-out}
-@keyframes sectionFade{
-  from{opacity:0;transform:translateY(4px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-/* More realistic dip-belt illustration */
-.plate-visual{
-  min-height:260px;
-  padding:14px 8px 12px;
-}
-.belt-stage{
-  height:195px;
-  padding:0 20px 0 12px;
-  align-items:center;
+  width:122px;
 }
 .belt-strap{
-  position:relative;
-  width:72px;
-  height:92px;
-  background:linear-gradient(90deg,#181818,#2a2a2a 55%,#151515);
-  border-radius:8px 2px 2px 8px;
-  box-shadow:inset 0 0 0 2px rgba(255,255,255,.06);
+  width:85px;height:62px;
+  border-radius:5px 0 0 5px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.04),transparent 18%),
+    repeating-linear-gradient(0deg,#1b1b1c 0 2px,#202022 2px 4px);
+  border:1px solid #3c3c3e;
+  box-shadow:inset 0 0 0 1px #121213;
 }
-.belt-strap::before,
 .belt-strap::after{
   content:"";
   position:absolute;
-  right:-18px;
-  width:26px;
-  height:12px;
-  background:#222;
-  border-radius:4px;
+  left:7px;right:39px;top:50%;
+  border-top:1px dashed #6c6c70;
 }
-.belt-strap::before{top:18px}
-.belt-strap::after{bottom:18px}
 .belt-loop{
-  width:48px;
-  height:86px;
-  border:9px solid #8c8c91;
+  width:47px;height:72px;
+  margin-left:-7px;
+  border:5px solid #b6b6b8;
   border-left:0;
   border-radius:0 28px 28px 0;
   box-shadow:inset -2px 0 0 rgba(255,255,255,.25);
 }
 .plate-stack{
-  position:relative;
   display:flex;
   align-items:center;
-  gap:0;
-  margin-left:2px;
+  gap:7px;
+  margin-left:0;
+  flex:none;
 }
 .plate-block{
   position:relative;
-  margin-left:-8px;
-  border-radius:50% / 8%;
+  display:grid;place-items:center;
+  margin:0;
+  border-radius:4px;
+  border:1px solid rgba(255,255,255,.25);
   box-shadow:
-    inset 5px 0 0 rgba(255,255,255,.16),
-    inset -7px 0 0 rgba(0,0,0,.2),
-    2px 2px 4px rgba(0,0,0,.3);
-  border:1px solid rgba(0,0,0,.3);
+    inset 3px 0 0 rgba(255,255,255,.12),
+    inset -4px 0 0 rgba(0,0,0,.20),
+    0 2px 5px rgba(0,0,0,.28);
 }
-.plate-block:first-child{margin-left:0}
-.plate-block::before{display:none}
 .plate-block span{
-  position:relative;
-  z-index:2;
-  text-shadow:0 1px 2px rgba(0,0,0,.55);
+  position:relative;z-index:1;
+  color:#fff;font-size:17px;font-weight:800;
+  text-shadow:0 1px 2px rgba(0,0,0,.75);
 }
 .chain{
-  position:relative;
-  width:200px;
-  height:20px;
-  margin-left:4px;
-  background:none;
-}
-.chain::before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:4px;
-  width:195px;
-  height:12px;
+  width:210px;height:29px;flex:none;margin-left:7px;
   background:
-    radial-gradient(ellipse at center,transparent 44%,#858585 46% 62%,transparent 64%) 0 0/28px 12px repeat-x;
+    repeating-linear-gradient(90deg,
+      transparent 0 5px,
+      #9c9c9f 5px 8px,
+      transparent 8px 18px,
+      #9c9c9f 18px 21px,
+      transparent 21px 31px);
+  border-top:5px solid transparent;
+  position:relative;
 }
 .chain::after{
   content:"";
-  position:absolute;
-  left:14px;
-  top:4px;
-  width:195px;
-  height:12px;
+  position:absolute;inset:5px 0 auto 0;height:14px;
   background:
-    radial-gradient(ellipse at center,transparent 44%,#858585 46% 62%,transparent 64%) 0 0/28px 12px repeat-x;
-  transform:rotate(90deg) scaleY(.45);
-  transform-origin:left center;
-  opacity:.85;
+    repeating-linear-gradient(90deg,
+      transparent 0 4px,
+      #9c9c9f 4px 7px,
+      transparent 7px 19px,
+      #9c9c9f 19px 22px,
+      transparent 22px 32px);
+  border-top:4px solid #9c9c9f;
+  border-bottom:4px solid #9c9c9f;
+  opacity:.92;
 }
-
+.visual-total{
+  text-align:center;
+  margin-top:-7px;
+  font-size:clamp(14px,3.4vw,18px);
+}
+.visual-total strong{font-size:1.1em}
+.card-footer{
+  border-top:1px solid rgba(255,255,255,.26);
+  margin-top:14px;
+  padding-top:12px;
+  color:#c4c4c8;
+  text-align:center;
+  font-size:13px;
+  line-height:1.35;
+}
+.card-footer span{color:#e8a72b}
+.result.has-output{animation:sectionFade .22s ease-out}
+@keyframes sectionFade{
+  from{opacity:0;transform:translateY(4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:390px){
+  .app-shell{padding-left:6px;padding-right:6px}
+  .app-card{padding-left:12px;padding-right:12px}
+  .input-grid{gap:0 10px}
+  input,select{height:54px;padding-left:11px}
+  .section-heading{gap:9px}
+  .section-icon{width:36px;height:36px}
+  .belt-stage{transform:scale(.9);transform-origin:left center;width:111%}
+}
+@media(max-width:345px){
+  .input-grid{grid-template-columns:1fr}
+  .actual-grid label:first-child{grid-column:auto}
+}
 </style>
 </head>
 <body>
-<main>
-<header class="ios-titlebar"><div class="ios-title">Weighted Chinup Calculator</div></header>
+<main class="app-shell">
+  <header class="app-bar">
+    <button class="nav-icon" type="button" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="app-title">Weighted Chinup Calculator</div>
+    <button class="gear-icon" type="button" aria-label="Settings">⚙</button>
+  </header>
 
-<div class="card">
-<label>Bodyweight (lbs)<input id="bw" type="number" step="0.1" inputmode="decimal"></label>
-<label>Bodyweight + Belt (lbs)<input id="bwbelt" type="number" step="0.1" inputmode="decimal"></label>
-</div>
+  <section class="app-card daily-card">
+    <div class="section-heading">
+      <span class="section-icon target-icon">◎</span>
+      <h2>Daily Inputs</h2>
+    </div>
+    <div class="input-grid">
+      <label>Bodyweight (lbs)<input id="bw" type="number" step="0.1" inputmode="decimal"></label>
+      <label>Bodyweight + Belt (lbs)<input id="bwbelt" type="number" step="0.1" inputmode="decimal"></label>
+    </div>
+  </section>
 
-<div class="card">
-<h2>Feeler Set → Top Set Recommendation</h2>
-<label>Feeler Set Reps (@ bodyweight only)<input id="feelerReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-<label>Feeler Set RIR / RPE<select id="feelerRpe"></select></label>
-<label>Target Top Set Reps<input id="targetReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-<label>Target Top Set RIR / RPE<select id="targetRpe"></select></label>
-<div class="result" id="topOutput">Enter your feeler set and target.</div>
-</div>
+  <section class="app-card">
+    <div class="section-heading">
+      <span class="section-icon target-icon">◎</span>
+      <h2>Feeler Set → Top Set Recommendation</h2>
+    </div>
 
-<div class="card">
-<h2>Actual Top Set → Backoff Recommendation</h2>
-<label>Actual Added Weight (lbs)<input id="actualLoad" type="number" min="0" step="0.001" inputmode="decimal"></label>
-<label>Actual Top Set Reps<input id="actualReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-<label>Actual Top Set RIR / RPE<select id="actualRpe"></select></label>
-<div class="result" id="e1rmOutput">Enter your actual top set.</div>
-<hr>
-<label>Backoff Reps<input id="backoffReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-<label>Backoff RIR / RPE Cap<select id="backoffRpe"></select></label>
-<div class="result" id="backoffOutput">Enter your actual top set, backoff reps and RPE cap.</div>
-</div>
+    <div class="input-grid">
+      <label>Feeler Set Reps (@ bodyweight only)<input id="feelerReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+      <label>Feeler Set RIR / RPE<select id="feelerRpe"></select></label>
+      <label>Target Top Set Reps<input id="targetReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+      <label>Target Top Set RIR / RPE<select id="targetRpe"></select></label>
+    </div>
+
+    <div class="result integrated-result" id="topOutput">Enter your feeler set and target.</div>
+  </section>
+
+  <section class="app-card">
+    <div class="section-heading">
+      <span class="section-icon chart-icon">▥</span>
+      <h2>Actual Top Set → Backoff Recommendation</h2>
+    </div>
+
+    <div class="input-grid actual-grid">
+      <label>Actual Added Weight (lbs)<input id="actualLoad" type="number" min="0" step="0.001" inputmode="decimal"></label>
+      <label>Actual Top Set Reps<input id="actualReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+      <label>Actual Top Set RIR / RPE<select id="actualRpe"></select></label>
+    </div>
+
+    <div class="result integrated-result compact-result" id="e1rmOutput">Enter your actual top set.</div>
+
+    <div class="section-rule"></div>
+
+    <div class="input-grid">
+      <label>Backoff Reps<input id="backoffReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
+      <label>Backoff RIR / RPE Cap<select id="backoffRpe"></select></label>
+    </div>
+
+    <div class="result integrated-result" id="backoffOutput">Enter your actual top set, backoff reps and RPE cap.</div>
+
+    <div class="card-footer">
+      Calculations use your custom <span>RTS table</span> and available plates.<br>
+      Values update automatically.
+    </div>
+  </section>
 </main>
 
 <script>
@@ -425,29 +523,54 @@ const plateStyles={
 
 function plateVisual(load){
  if(!load.counts || load.counts.length===0)return "";
- const blocks=[];
- load.counts.forEach(item=>{
-   const style=plateStyles[String(item.lbs)]||{height:68,width:36,color:"#555"};
-   for(let i=0;i<item.count;i++){
-     blocks.push(`<div class="plate-block" style="height:${style.height}px;width:${style.width}px;background:${style.color}"><span>${item.lbs}</span></div>`);
-   }
- });
- const kgTotal=(load.total/2.2).toFixed(2);
+
+ function blocksFor(unit){
+   const blocks=[];
+   load.counts.forEach(item=>{
+     const style=plateStyles[String(item.lbs)]||{height:68,width:36,color:"#555"};
+     const label=unit==="lbs" ? item.lbs : item.kg;
+     for(let i=0;i<item.count;i++){
+       blocks.push(`<div class="plate-block" style="height:${style.height}px;width:${style.width}px;background:${style.color}"><span>${label}</span></div>`);
+     }
+   });
+   return blocks.join("");
+ }
+
+ const kgTotal=load.total/2.2;
  return `<div class="plate-visual">
-   <div class="plate-summary"><span>${kgTotal} kg</span><span>${load.total.toFixed(2)} lbs</span></div>
-   <div class="belt-stage">
-     <div class="belt-strap"></div><div class="belt-loop"></div>
-     <div class="plate-stack">${blocks.join("")}</div>
-     <div class="chain"></div>
+   <div class="visual-set">
+     <div class="visual-heading"><span>Plates to use (lbs)</span></div>
+     <div class="belt-stage">
+       <div class="belt-wrap"><div class="belt-strap"></div><div class="belt-loop"></div></div>
+       <div class="plate-stack">${blocksFor("lbs")}</div>
+       <div class="chain"></div>
+     </div>
+     <div class="visual-total">Total: <strong>${load.total.toFixed(2)}</strong> lbs&nbsp;&nbsp;(<strong>${kgTotal.toFixed(2)}</strong> kg)</div>
+   </div>
+   <div class="visual-set">
+     <div class="visual-heading"><span>Plates to use (kg)</span></div>
+     <div class="belt-stage">
+       <div class="belt-wrap"><div class="belt-strap"></div><div class="belt-loop"></div></div>
+       <div class="plate-stack">${blocksFor("kg")}</div>
+       <div class="chain"></div>
+     </div>
+     <div class="visual-total">Total: <strong>${kgTotal.toFixed(2)}</strong> kg&nbsp;&nbsp;(<strong>${load.total.toFixed(2)}</strong> lbs)</div>
    </div>
  </div>`;
 }
 
 function outputRow(label,value,key=false,gold=false,copy=false){
- const numericCopy=String(value).match(/-?\d+(?:\.\d+)?/)?.[0] ?? String(value);
+ const raw=String(value);
+ const match=raw.match(/^(-?\d+(?:\.\d+)?)(.*)$/);
+ const numberPart=match ? match[1] : raw;
+ const suffixPart=match ? match[2] : "";
+ const displayValue=gold
+  ? `<span class="number-part">${numberPart}</span><span class="unit-part">${suffixPart}</span>`
+  : raw;
+ const numericCopy=numberPart;
  const valueHtml=copy
-  ? `<span class="copy-wrap"><span class="output-value">${value}</span><button class="copy-btn" type="button" aria-label="Copy ${label}" onclick="copyOutput(this,'${numericCopy}')">⧉</button></span>`
-  : `<span class="output-value">${value}</span>`;
+  ? `<span class="copy-wrap"><span class="output-value">${displayValue}</span><button class="copy-btn" type="button" aria-label="Copy ${label}" onclick="copyOutput(this,'${numericCopy}')">⧉</button></span>`
+  : `<span class="output-value">${displayValue}</span>`;
  return `<div class="output-row${key?" key":""}${gold?" gold":""}"><span class="output-label">${label}</span>${valueHtml}</div>`;
 }
 
@@ -475,13 +598,8 @@ function recommendationOutput(targetLabel,targetTotal,exactAdded,load,bwbelt){
    ${outputRow(targetLabel,`${targetTotal.toFixed(2)} lbs`,false,false)}
    ${outputRow("Exact added weight required",`${Math.max(0,exactAdded).toFixed(2)} lbs`)}
    <div class="output-divider"></div>
-   ${outputRow("Suggested weight",`${load.total.toFixed(2)} lbs`,true,true,true)}
-   ${outputRow("Actual total weight",`${(bwbelt+load.total).toFixed(2)} lbs`,true,true,true)}
-   <div class="plates-heading">Plates</div>
-   <div class="plate-lines">
-     <div><span class="plate-unit">LBS:</span><span class="plate-text">${load.lbs}</span></div>
-     <div><span class="plate-unit">KG:</span><span class="plate-text">${load.kg}</span></div>
-   </div>
+   ${outputRow("Suggested weight (load on belt)",`${load.total.toFixed(2)} lbs`,true,true,true)}
+   ${outputRow("Actual total weight (achievable)",`${(bwbelt+load.total).toFixed(2)} lbs`,true,true,true)}
    ${plateVisual(load)}
  </div>`;
 }
@@ -545,10 +663,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v11",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v13",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v11")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v13")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
