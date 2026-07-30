@@ -7,21 +7,132 @@
 <link rel="manifest" href="manifest.json">
 <title>Weighted Chinup Calculator</title>
 <style>
+:root{
+  --bg:#111111;
+  --card:#1c1c1e;
+  --field:#2c2c2e;
+  --line:#3a3a3c;
+  --text:#f4f4f4;
+  --muted:#a9a9ae;
+  --gold:#f2c94c;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#111;color:#f4f4f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-main{max-width:720px;margin:auto;padding:18px 14px 40px}
-h1{font-size:30px;margin:4px 0 6px}.sub{opacity:.7;margin-bottom:20px}
-.card{background:#1c1c1e;border-radius:16px;padding:16px;margin:12px 0}
-h2{font-size:20px;margin:0 0 12px}
-label{display:block;font-size:14px;margin:12px 0 5px;opacity:.9}
-input,select{width:100%;font-size:17px;padding:12px;border:0;border-radius:10px;background:#2c2c2e;color:#fff}
-.result{margin-top:12px;padding:12px;background:#2c2c2e;border-radius:10px;line-height:1.55}
-.big{font-size:19px;font-weight:700}.muted{opacity:.7;font-size:13px}
-.plate{font-weight:700}
-button{width:100%;padding:12px;border:0;border-radius:10px;background:#444;color:#fff;font-size:16px;margin-top:10px}
-hr{border:0;border-top:1px solid #3a3a3c;margin:15px 0}
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-input[type=number]{-moz-appearance:textfield;appearance:textfield;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+main{max-width:720px;margin:auto;padding:20px 14px 44px}
+h1{font-size:30px;line-height:1.1;margin:4px 0 18px;font-weight:800;letter-spacing:-.4px}
+.card{background:var(--card);border-radius:18px;padding:18px;margin:14px 0}
+h2{font-size:20px;line-height:1.2;margin:0 0 14px;font-weight:750;letter-spacing:-.15px}
+label{
+  display:block;
+  font-size:14px;
+  font-weight:600;
+  margin:15px 0 6px;
+  color:#d7d7da;
+}
+input,select{
+  width:100%;
+  min-height:50px;
+  font-size:18px;
+  padding:13px 14px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:var(--field);
+  color:#fff;
+  outline:none;
+}
+input:focus,select:focus{border-color:var(--gold)}
+.result{
+  margin-top:15px;
+  padding:14px;
+  background:var(--field);
+  border-radius:12px;
+  line-height:1.4;
+}
+.output-group{display:grid;gap:4px}
+.output-row{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:14px;
+  min-height:25px;
+}
+.output-label{color:var(--muted);font-size:14px;font-weight:600}
+.output-value{color:var(--gold);font-size:16px;font-weight:750;text-align:right;white-space:nowrap}
+.output-row.key .output-label{color:#e4e4e7;font-size:15px}
+.output-row.key .output-value{font-size:20px;font-weight:850}
+.output-divider{height:1px;background:var(--line);margin:10px 0 8px}
+.plates-heading{font-weight:800;font-size:16px;margin:14px 0 5px}
+.plate-lines{display:grid;gap:3px}
+.plate-unit{color:var(--muted);font-weight:750;margin-right:5px}
+.plate-text{color:var(--gold);font-weight:700}
+.muted{color:var(--muted);font-size:13px}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+
+/* Compact visual belt/plate display inspired by the supplied reference. */
+.plate-visual{
+  position:relative;
+  margin-top:12px;
+  min-height:126px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:12px 8px 8px;
+  border-radius:10px;
+  background:#f7f7f7;
+  color:#111;
+}
+.plate-summary{
+  display:flex;
+  justify-content:space-between;
+  padding:0 6px 8px;
+  font-size:15px;
+  font-weight:750;
+}
+.belt-stage{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-width:max-content;
+  height:78px;
+  padding:0 14px 0 8px;
+}
+.belt-loop{
+  width:36px;height:44px;border:7px solid #8e8e93;border-left:0;border-radius:0 24px 24px 0;flex:none
+}
+.belt-strap{width:34px;height:30px;background:#242424;flex:none}
+.plate-stack{display:flex;align-items:center;gap:3px;flex:none}
+.plate-block{
+  min-width:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  border-radius:1px;
+  padding:0 4px;
+}
+.chain{
+  position:relative;
+  width:150px;
+  height:8px;
+  background:#888;
+  margin-left:8px;
+  flex:none;
+}
+.chain::after{
+  content:"";
+  position:absolute;
+  left:4px;right:4px;top:-10px;height:24px;
+  background:repeating-linear-gradient(90deg,transparent 0 8px,#888 8px 13px,transparent 13px 22px);
+  opacity:.9;
+}
 </style>
 </head>
 <body>
@@ -99,7 +210,6 @@ const micro=[2.2,1.1,0.55,0.275];
 
 function plateCombo(target){
  target=Math.max(0,target);
- // Work in thousandths to avoid floating-point issues.
  const T=Math.floor(target*1000+1e-7);
  let best=-1,bestCount=Infinity,bestVec=null;
 
@@ -121,27 +231,29 @@ function plateCombo(target){
      best=total;bestCount=count;bestVec=vec;
    }
  }
- if(best<=0)return {total:0,lbs:"Bodyweight only",kg:"Bodyweight only"};
+ if(best<=0)return {total:0,lbs:"Bodyweight only",kg:"Bodyweight only",counts:[]};
 
  const lbs=[44,33,22,11,5.5,2.75,2.2,1.1,0.55,0.275];
  const kg=[20,15,10,5,2.5,1.25,1,0.5,0.25,0.125];
-
  const lbParts=[];
  const kgParts=[];
+ const counts=[];
+
  bestVec.forEach((n,i)=>{
    if(n>0){
      lbParts.push(n===1?`${lbs[i]}`:`${n} × ${lbs[i]}`);
      kgParts.push(n===1?`${kg[i]}`:`${n} × ${kg[i]}`);
+     counts.push({count:n,lbs:lbs[i],kg:kg[i]});
    }
  });
 
  return {
    total:best/1000,
    lbs:lbParts.join(" + "),
-   kg:kgParts.join(" + ")
+   kg:kgParts.join(" + "),
+   counts
  };
 }
-
 function pct(reps,rpe){
  if(!chart[reps])return null;
  const i=rpes.indexOf(Number(rpe));
@@ -149,6 +261,60 @@ function pct(reps,rpe){
 }
 
 function val(id){return parseFloat(document.getElementById(id).value)}
+
+
+const plateStyles={
+  "44":{height:72,color:"#111111"},
+  "33":{height:67,color:"#1f5fbf"},
+  "22":{height:62,color:"#c625c3"},
+  "11":{height:54,color:"#d91f2a"},
+  "5.5":{height:46,color:"#f45112"},
+  "2.75":{height:39,color:"#e0b31d"},
+  "2.2":{height:36,color:"#2f9e44"},
+  "1.1":{height:32,color:"#4c6ef5"},
+  "0.55":{height:28,color:"#868e96"},
+  "0.275":{height:25,color:"#adb5bd"}
+};
+
+function plateVisual(load){
+ if(!load.counts || load.counts.length===0)return "";
+ const blocks=[];
+ load.counts.forEach(item=>{
+   const style=plateStyles[String(item.lbs)]||{height:34,color:"#555"};
+   for(let i=0;i<item.count;i++){
+     blocks.push(`<div class="plate-block" style="height:${style.height}px;background:${style.color}">${item.lbs}</div>`);
+   }
+ });
+ const kgTotal=(load.total/2.2).toFixed(2);
+ return `<div class="plate-visual">
+   <div class="plate-summary"><span>${kgTotal} kg</span><span>${load.total.toFixed(2)} lbs</span></div>
+   <div class="belt-stage">
+     <div class="belt-strap"></div><div class="belt-loop"></div>
+     <div class="plate-stack">${blocks.join("")}</div>
+     <div class="chain"></div>
+   </div>
+ </div>`;
+}
+
+function outputRow(label,value,key=false){
+ return `<div class="output-row${key?" key":""}"><span class="output-label">${label}</span><span class="output-value">${value}</span></div>`;
+}
+
+function recommendationOutput(targetLabel,targetTotal,exactAdded,load,bwbelt){
+ return `<div class="output-group">
+   ${outputRow(targetLabel,`${targetTotal.toFixed(2)} lbs`)}
+   ${outputRow("Exact added weight required",`${Math.max(0,exactAdded).toFixed(2)} lbs`)}
+   <div class="output-divider"></div>
+   ${outputRow("Suggested weight",`${load.total.toFixed(2)} lbs`,true)}
+   ${outputRow("Actual total weight",`${(bwbelt+load.total).toFixed(2)} lbs`,true)}
+   <div class="plates-heading">Plates</div>
+   <div class="plate-lines">
+     <div><span class="plate-unit">LBS:</span><span class="plate-text">${load.lbs}</span></div>
+     <div><span class="plate-unit">KG:</span><span class="plate-text">${load.kg}</span></div>
+   </div>
+   ${plateVisual(load)}
+ </div>`;
+}
 
 function recalc(){
  const bw=val("bw"),bwbelt=val("bwbelt");
@@ -165,13 +331,7 @@ function recalc(){
      const idealTotal=feelerE1rm*tp;
      const exactAdded=idealTotal-bwbelt;
      const load=plateCombo(exactAdded);
-     topText+=`<div><b>Suggested total weight:</b> ${idealTotal.toFixed(2)} lbs</div>`;
-     topText+=`<div><b>Exact added weight required:</b> ${Math.max(0,exactAdded).toFixed(2)} lbs</div>`;
-     topText+=`<div class="big">Suggested weight: ${load.total.toFixed(2)} lbs</div>`;
-     topText+=`<div><b>Actual total weight:</b> ${(bwbelt+load.total).toFixed(2)} lbs</div>`;
-     topText+=`<br><div class="plate">Plates</div>`;
-     topText+=`<div><b>LBS:</b> ${load.lbs}</div>`;
-     topText+=`<div><b>KG:</b> ${load.kg}</div>`;
+     topText=recommendationOutput("Suggested total weight",idealTotal,exactAdded,load,bwbelt);
    }
  }
  document.getElementById("topOutput").innerHTML=topText;
@@ -181,7 +341,7 @@ function recalc(){
  if(ap && bwbelt>0 && !isNaN(al)){
    const actualTotal=bwbelt+al;
    const e1rm=actualTotal/ap;
-   eText=`<div class="big">Session e1RM: ${e1rm.toFixed(2)} lbs</div>`;
+   eText=`<div class="output-group">${outputRow("Session e1RM",`${e1rm.toFixed(2)} lbs`,true)}</div>`;
    document.getElementById("e1rmOutput").innerHTML=eText;
 
    const br=parseInt(document.getElementById("backoffReps").value);
@@ -190,13 +350,7 @@ function recalc(){
      const idealBack=e1rm*backoffPct;
      const exactBack=idealBack-bwbelt;
      const backLoad=plateCombo(exactBack);
-     let bText=`<div><b>Backoff target total weight:</b> ${idealBack.toFixed(2)} lbs</div>`;
-     bText+=`<div><b>Exact added weight required:</b> ${Math.max(0,exactBack).toFixed(2)} lbs</div>`;
-     bText+=`<div class="big">Suggested weight: ${backLoad.total.toFixed(2)} lbs</div>`;
-     bText+=`<div><b>Actual total weight:</b> ${(bwbelt+backLoad.total).toFixed(2)} lbs</div>`;
-     bText+=`<br><div class="plate">Plates</div>`;
-     bText+=`<div><b>LBS:</b> ${backLoad.lbs}</div>`;
-     bText+=`<div><b>KG:</b> ${backLoad.kg}</div>`;
+     let bText=recommendationOutput("Backoff target total weight",idealBack,exactBack,backLoad,bwbelt);
      document.getElementById("backoffOutput").innerHTML=bText;
    }else{
      document.getElementById("backoffOutput").innerHTML="Enter your actual top set, backoff reps and RPE cap.";
@@ -208,12 +362,12 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v7",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v8",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v7")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v8")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
-document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",recalc));
+document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 </script>
