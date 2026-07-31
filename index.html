@@ -371,9 +371,9 @@ select optgroup{
 
     <div class="input-grid">
       <label>Feeler Set Reps (@ bodyweight only)<input id="feelerReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-      <label>Feeler Set RIR...RPE<select id="feelerRpe"></select></label>
+      <label>Feeler Set RIR / RPE<select id="feelerRpe"></select></label>
       <label>Target Top Set Reps<input id="targetReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-      <label>Target Top Set RIR...RPE<select id="targetRpe"></select></label>
+      <label>Target Top Set RIR / RPE<select id="targetRpe"></select></label>
     </div>
 
     <div class="result integrated-result" id="topOutput">Enter your feeler set and target.</div>
@@ -388,7 +388,7 @@ select optgroup{
     <div class="input-grid actual-grid">
       <label>Actual Added Weight (lbs)<input id="actualLoad" type="number" min="0" step="0.001" inputmode="decimal"></label>
       <label>Actual Top Set Reps<input id="actualReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-      <label>Actual Top Set RIR...RPE<select id="actualRpe"></select></label>
+      <label>Actual Top Set RIR / RPE<select id="actualRpe"></select></label>
     </div>
 
     <div class="result integrated-result compact-result" id="e1rmOutput">Enter your actual top set.</div>
@@ -397,7 +397,7 @@ select optgroup{
 
     <div class="input-grid">
       <label>Backoff Reps<input id="backoffReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
-      <label>Backoff RIR...RPE Cap<select id="backoffRpe"></select></label>
+      <label>Backoff RIR / RPE Cap<select id="backoffRpe"></select></label>
     </div>
 
     <div class="result integrated-result" id="backoffOutput">Enter your actual top set, backoff reps and RPE cap.</div>
@@ -411,13 +411,13 @@ select optgroup{
 
 <script>
 const rpeLabels=[
-["0 RIR...RPE 10",10],["0.5 RIR...RPE 9.5",9.5],["1 RIR...RPE 9",9],
-["1.5 RIR...RPE 8.5",8.5],["2 RIR...RPE 8",8],["2.5 RIR...RPE 7.5",7.5],
-["3 RIR...RPE 7",7],["3.5 RIR...RPE 6.5",6.5],["4 RIR...RPE 6",6],
-["4.5 RIR...RPE 5.5",5.5],["5 RIR...RPE 5",5],["5.5 RIR...RPE 4.5",4.5],
-["6 RIR...RPE 4",4],["6.5 RIR...RPE 3.5",3.5],["7 RIR...RPE 3",3],
-["7.5 RIR...RPE 2.5",2.5],["8 RIR...RPE 2",2],["8.5 RIR...RPE 1.5",1.5],
-["9 RIR...RPE 1",1]
+["0 RIR   RPE 10",10],["0.5 RIR   RPE 9.5",9.5],["1 RIR   RPE 9",9],
+["1.5 RIR   RPE 8.5",8.5],["2 RIR   RPE 8",8],["2.5 RIR   RPE 7.5",7.5],
+["3 RIR   RPE 7",7],["3.5 RIR   RPE 6.5",6.5],["4 RIR   RPE 6",6],
+["4.5 RIR   RPE 5.5",5.5],["5 RIR   RPE 5",5],["5.5 RIR   RPE 4.5",4.5],
+["6 RIR   RPE 4",4],["6.5 RIR   RPE 3.5",3.5],["7 RIR   RPE 3",3],
+["7.5 RIR   RPE 2.5",2.5],["8 RIR   RPE 2",2],["8.5 RIR   RPE 1.5",1.5],
+["9 RIR   RPE 1",1]
 ];
 
 // User-provided chart. Values are percentages, not decimals.
@@ -647,10 +647,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v15",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v17",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v15")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v17")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
