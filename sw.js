@@ -1,4 +1,4 @@
-const CACHE="weighted-chinup-v17";
+const CACHE="weighted-chinup-v18";
 self.addEventListener("install",event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>
