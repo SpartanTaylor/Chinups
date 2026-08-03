@@ -347,6 +347,67 @@ select optgroup{
 .stocks-icon{color:var(--purple);width:42px;height:42px;flex:none;border-radius:10px;background:rgba(211,60,255,.12);padding:4px}
 .gear-icon svg{width:38px;height:38px;display:block}
 
+
+.micro-toggle-row{
+  display:flex;
+  justify-content:flex-end;
+  margin:-2px 4px 8px;
+}
+.micro-toggle-label{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin:0;
+  color:#f1f1f3;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+.ios-switch{
+  position:relative;
+  display:inline-block;
+  width:51px;
+  height:31px;
+  flex:none;
+}
+.ios-switch input{
+  position:absolute;
+  opacity:0;
+  width:1px;
+  height:1px;
+  pointer-events:none;
+}
+.ios-slider{
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background:#3a3a3c;
+  transition:background .18s ease;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.ios-slider::before{
+  content:"";
+  position:absolute;
+  width:27px;
+  height:27px;
+  left:2px;
+  top:2px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 2px 5px rgba(0,0,0,.35);
+  transition:transform .18s ease;
+}
+.ios-switch input:checked + .ios-slider{
+  background:#34c759;
+}
+.ios-switch input:checked + .ios-slider::before{
+  transform:translateX(20px);
+}
+.ios-switch input:focus-visible + .ios-slider{
+  outline:2px solid var(--blue);
+  outline-offset:2px;
+}
+
 </style>
 </head>
 <body>
@@ -363,6 +424,15 @@ select optgroup{
       </svg>
     </button>
   </header>
+  <div class="micro-toggle-row">
+    <label class="micro-toggle-label" for="microplatesToggle">
+      <span>Microplates</span>
+      <span class="ios-switch">
+        <input id="microplatesToggle" type="checkbox" checked>
+        <span class="ios-slider"></span>
+      </span>
+    </label>
+  </div>
 
   <section class="app-card daily-card">
     <div class="section-heading">
@@ -510,7 +580,9 @@ function plateCombo(target){
  const T=Math.floor(target*1000+1e-7);
  let best=-1,bestCount=Infinity,bestVec=null;
 
- for(let a=0;a<=2;a++)for(let b=0;b<=2;b++)for(let c=0;c<=2;c++)for(let d=0;d<=2;d++){
+ const microplatesOn=document.getElementById("microplatesToggle")?.checked ?? true;
+ const microMax=microplatesOn?2:0;
+ for(let a=0;a<=microMax;a++)for(let b=0;b<=microMax;b++)for(let c=0;c<=microMax;c++)for(let d=0;d<=microMax;d++){
    const micros=[a,b,c,d];
    const microSum=Math.round((a*2.2+b*1.1+c*.55+d*.275)*1000);
    if(microSum>T) continue;
@@ -701,13 +773,23 @@ function recalc(){
  }
 
  const data={};
- document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v23",JSON.stringify(data));
+ document.querySelectorAll("input,select").forEach(x=>{
+   data[x.id]=x.type==="checkbox"?x.checked:x.value;
+ });
+ localStorage.setItem("weighted-chinup-v24",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v23")||"{}");
-Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
-document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v24")||"{}");
+Object.entries(saved).forEach(([k,v])=>{
+ const e=document.getElementById(k);
+ if(!e)return;
+ if(e.type==="checkbox")e.checked=Boolean(v);
+ else e.value=v;
+});
+document.querySelectorAll("input,select").forEach(e=>{
+ e.addEventListener("input",recalc);
+ e.addEventListener("change",recalc);
+});
 recalc();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 </script>
