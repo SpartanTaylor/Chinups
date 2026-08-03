@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>WEIGHTED CHINUP CALCULATOR</title>
-<!-- CANONICAL MASTER BUILD: master-v3 -->
+<!-- CANONICAL MASTER BUILD: master-v5-final -->
 <style>
 :root{
   --bg:#09090a;
@@ -425,6 +425,45 @@ white-space:nowrap;
 gap:10px;
 }
 
+
+/* MASTER v5 FINAL overrides */
+.micro-toggle-row{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  margin:-2px 4px 8px;
+}
+.micro-toggle-control{
+  display:inline-flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  white-space:nowrap;
+}
+.micro-toggle-text{
+  display:inline-block;
+  white-space:nowrap;
+  color:#f1f1f3;
+  font-size:15px;
+  font-weight:600;
+  line-height:31px;
+}
+.micro-toggle-control .ios-switch{
+  flex:0 0 51px;
+  margin:0;
+}
+.card-footer{
+  border-top:1px solid rgba(255,255,255,.26);
+  margin-top:14px;
+  padding-top:12px;
+  color:#c4c4c8;
+  text-align:center;
+  font-size:13px;
+  line-height:1.35;
+}
+
 </style>
 </head>
 <body>
@@ -442,15 +481,15 @@ gap:10px;
     </button>
   </header>
   <div class="micro-toggle-row">
-    <label class="micro-toggle-label" for="microplatesToggle"><span style="white-space:nowrap;">Microplates</span>
-      <span class="ios-switch">
+    <div class="micro-toggle-control">
+      <span class="micro-toggle-text">Microplates</span>
+      <label class="ios-switch" for="microplatesToggle">
         <input id="microplatesToggle" type="checkbox" checked>
         <span class="ios-slider"></span>
-      </span>
-    </label>
+      </label>
+    </div>
   </div>
-
-  <section class="app-card daily-card">
+<section class="app-card daily-card">
     <div class="section-heading">
       <span class="section-icon scales-icon" aria-hidden="true">
         <svg viewBox="0 0 64 64">
@@ -543,10 +582,7 @@ gap:10px;
 
     <div class="result integrated-result" id="backoffOutput">Enter your actual top set, backoff reps and RPE cap.</div>
 
-    <div class="card-footer">
-      Calculations use your custom <span>RTS table</span> and available plates.<br>
-      Values update automatically.
-    </div>
+    <div class="card-footer">Calculations use the RTS RPE table</div>
   </section>
 </main>
 
@@ -798,10 +834,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v4",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v5-final",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v4")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v5-final")||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
