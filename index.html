@@ -106,7 +106,7 @@ button,input,select{font:inherit}
 .actual-grid label:first-child{grid-column:1/-1}
 label{
   display:block;
-  margin:12px 0 10px;
+  margin:12px 0 16px;
   color:#efeff2;
   font-size:clamp(13px,3.25vw,18px);
   font-weight:500;
@@ -776,10 +776,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-v24",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v25",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v24")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v25")||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
