@@ -235,10 +235,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   display:flex;
   align-items:center;
   flex:none;
-  width:122px;
+  width:88px;
 }
 .belt-strap{
-  width:85px;height:62px;
+  width:58px;height:62px;
   border-radius:5px 0 0 5px;
   background:
     linear-gradient(180deg,rgba(255,255,255,.04),transparent 18%),
@@ -249,11 +249,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .belt-strap::after{
   content:"";
   position:absolute;
-  left:7px;right:39px;top:50%;
+  left:6px;right:27px;top:50%;
   border-top:1px dashed #6c6c70;
 }
 .belt-loop{
-  width:47px;height:72px;
+  width:34px;height:72px;
   margin-left:-7px;
   border:5px solid #b6b6b8;
   border-left:0;
@@ -263,7 +263,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .plate-stack{
   display:flex;
   align-items:center;
-  gap:7px;
+  gap:5px;
   margin-left:0;
   flex:none;
 }
@@ -340,6 +340,13 @@ select optgroup{
   color:#ffffff;
 }
 
+
+.section-icon svg{width:100%;height:100%;display:block}
+.scales-icon{color:var(--blue);border-radius:12px;width:42px;height:42px;flex:none}
+.sonar-icon{color:#36d26f;width:42px;height:42px;flex:none;border-radius:50%;background:rgba(54,210,111,.08)}
+.stocks-icon{color:var(--purple);width:42px;height:42px;flex:none;border-radius:10px;background:rgba(211,60,255,.12);padding:4px}
+.gear-icon svg{width:38px;height:38px;display:block}
+
 </style>
 </head>
 <body>
@@ -349,12 +356,24 @@ select optgroup{
       <span></span><span></span><span></span>
     </button>
     <div class="app-title">Weighted Chinup Calculator</div>
-    <button class="gear-icon" type="button" aria-label="Settings">⚙</button>
+    <button class="gear-icon" type="button" aria-label="Settings">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M27 4h10l2 8a23 23 0 0 1 5 2l7-4 7 7-4 7a23 23 0 0 1 2 5l8 2v10l-8 2a23 23 0 0 1-2 5l4 7-7 7-7-4a23 23 0 0 1-5 2l-2 8H27l-2-8a23 23 0 0 1-5-2l-7 4-7-7 4-7a23 23 0 0 1-2-5l-8-2V31l8-2a23 23 0 0 1 2-5l-4-7 7-7 7 4a23 23 0 0 1 5-2z" fill="currentColor"/>
+        <circle cx="32" cy="36" r="10" fill="#09090a"/>
+      </svg>
+    </button>
   </header>
 
   <section class="app-card daily-card">
     <div class="section-heading">
-      <span class="section-icon target-icon">◎</span>
+      <span class="section-icon scales-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <rect x="8" y="7" width="48" height="50" rx="12" fill="none" stroke="currentColor" stroke-width="4"/>
+          <path d="M20 22c5-7 19-7 24 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <path d="M32 21l5 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="32" cy="30" r="3" fill="currentColor"/>
+        </svg>
+      </span>
       <h2>Daily Inputs</h2>
     </div>
     <div class="input-grid">
@@ -365,7 +384,17 @@ select optgroup{
 
   <section class="app-card">
     <div class="section-heading">
-      <span class="section-icon target-icon">◎</span>
+      <span class="section-icon sonar-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="3"/>
+          <circle cx="32" cy="32" r="18" fill="none" stroke="currentColor" stroke-width="2" opacity=".7"/>
+          <circle cx="32" cy="32" r="9" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/>
+          <path d="M32 32L54 18A26 26 0 0 1 57 32Z" fill="currentColor" opacity=".28"/>
+          <path d="M32 32L54 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="45" cy="23" r="3.5" fill="currentColor"/>
+          <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
+        </svg>
+      </span>
       <h2>Feeler Set → Top Set Recommendation</h2>
     </div>
 
@@ -381,7 +410,15 @@ select optgroup{
 
   <section class="app-card">
     <div class="section-heading">
-      <span class="section-icon chart-icon">▥</span>
+      <span class="section-icon stocks-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <rect x="10" y="35" width="10" height="18" rx="2" fill="currentColor"/>
+          <rect x="27" y="28" width="10" height="25" rx="2" fill="currentColor"/>
+          <rect x="44" y="18" width="10" height="35" rx="2" fill="currentColor"/>
+          <path d="M8 31h14l9-12h8L52 6" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M45 6h9v9" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
       <h2>Actual Top Set → Backoff Recommendation</h2>
     </div>
 
@@ -506,11 +543,11 @@ function val(id){return parseFloat(document.getElementById(id).value)}
 
 
 const plateStyles={
-  "44":{height:152,width:76,color:"#111111"},
-  "33":{height:142,width:69,color:"#294d96"},
-  "22":{height:132,width:64,color:"#c626c7"},
-  "11":{height:120,width:58,color:"#dc2027"},
-  "5.5":{height:104,width:52,color:"#f45110"},
+  "44":{height:152,width:48,color:"#111111"},
+  "33":{height:142,width:46,color:"#294d96"},
+  "22":{height:132,width:44,color:"#c626c7"},
+  "11":{height:120,width:42,color:"#dc2027"},
+  "5.5":{height:104,width:40,color:"#f45110"},
   "2.75":{height:92,width:47,color:"#ffe123"},
   "2.2":{height:84,width:43,color:"#294d96"},
   "1.1":{height:76,width:39,color:"#1db34a"},
@@ -647,10 +684,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v19",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v20",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v19")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v20")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
