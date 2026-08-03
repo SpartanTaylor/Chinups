@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>Weighted Chinup Calculator</title>
-<!-- CANONICAL MASTER BUILD: master-v1 -->
+<!-- CANONICAL MASTER BUILD: master-v2 -->
 <style>
 :root{
   --bg:#09090a;
@@ -638,6 +638,12 @@ function pct(reps,rpe){
 
 function val(id){return parseFloat(document.getElementById(id).value)}
 
+function selectedRpe(id){
+ const select=document.getElementById(id);
+ if(!select || select.selectedIndex<0)return null;
+ return rpes[select.selectedIndex] ?? null;
+}
+
 
 const plateStyles={
   "44":{height:152,width:48,color:"#111111"},
@@ -738,9 +744,9 @@ function setResult(id,htmlContent){
 function recalc(){
  const bw=val("bw"),bwbelt=val("bwbelt");
  const fr=parseInt(document.getElementById("feelerReps").value);
- const fp=pct(fr,val("feelerRpe"));
+ const fp=pct(fr,selectedRpe("feelerRpe"));
  const tr=parseInt(document.getElementById("targetReps").value);
- const tp=pct(tr,val("targetRpe"));
+ const tp=pct(tr,selectedRpe("targetRpe"));
 
  let topText="Enter your feeler set and target.";
  if(fp && bw>0){
@@ -755,7 +761,7 @@ function recalc(){
  }
  setResult("topOutput",topText);
 
- const al=val("actualLoad"),ar=parseInt(document.getElementById("actualReps").value),ap=pct(ar,val("actualRpe"));
+ const al=val("actualLoad"),ar=parseInt(document.getElementById("actualReps").value),ap=pct(ar,selectedRpe("actualRpe"));
  let eText="Enter your actual top set.";
  if(ap && bwbelt>0 && !isNaN(al)){
    const actualTotal=bwbelt+al;
@@ -764,7 +770,7 @@ function recalc(){
    setResult("e1rmOutput",eText);
 
    const br=parseInt(document.getElementById("backoffReps").value);
-   const backoffPct=pct(br,val("backoffRpe"));
+   const backoffPct=pct(br,selectedRpe("backoffRpe"));
    if(backoffPct){
      const idealBack=e1rm*backoffPct;
      const exactBack=idealBack-bwbelt;
@@ -783,10 +789,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v1",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v2",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v1")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v2")||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
