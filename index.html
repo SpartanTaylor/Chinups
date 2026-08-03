@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
-<title>Weighted Chinup Calculator</title>
-<!-- CANONICAL MASTER BUILD: master-v2 -->
+<title>WEIGHTED CHINUP CALCULATOR</title>
+<!-- CANONICAL MASTER BUILD: master-v3 -->
 <style>
 :root{
   --bg:#09090a;
@@ -415,6 +415,16 @@ select optgroup{
 label > input,
 
 
+
+.micro-toggle-label{
+display:flex;
+align-items:center;
+justify-content:flex-end;
+flex-wrap:nowrap !important;
+white-space:nowrap;
+gap:10px;
+}
+
 </style>
 </head>
 <body>
@@ -423,7 +433,7 @@ label > input,
     <button class="nav-icon" type="button" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
-    <div class="app-title">Weighted Chinup Calculator</div>
+    <div class="app-title">WEIGHTED CHINUP CALCULATOR</div>
     <button class="gear-icon" type="button" aria-label="Settings">
       <svg viewBox="0 0 64 64" aria-hidden="true">
         <path d="M27 4h10l2 8a23 23 0 0 1 5 2l7-4 7 7-4 7a23 23 0 0 1 2 5l8 2v10l-8 2a23 23 0 0 1-2 5l4 7-7 7-7-4a23 23 0 0 1-5 2l-2 8H27l-2-8a23 23 0 0 1-5-2l-7 4-7-7 4-7a23 23 0 0 1-2-5l-8-2V31l8-2a23 23 0 0 1 2-5l-4-7 7-7 7 4a23 23 0 0 1 5-2z" fill="currentColor"/>
@@ -432,8 +442,7 @@ label > input,
     </button>
   </header>
   <div class="micro-toggle-row">
-    <label class="micro-toggle-label" for="microplatesToggle">
-      <span>Microplates</span>
+    <label class="micro-toggle-label" for="microplatesToggle"><span style="white-space:nowrap;">Microplates</span>
       <span class="ios-switch">
         <input id="microplatesToggle" type="checkbox" checked>
         <span class="ios-slider"></span>
@@ -789,10 +798,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v2",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v4",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v2")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v4")||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
