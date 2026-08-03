@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>Weighted Chinup Calculator</title>
+<!-- CANONICAL MASTER BUILD: master-v1 -->
 <style>
 :root{
   --bg:#09090a;
@@ -84,8 +85,8 @@ button,input,select{font:inherit}
 .section-icon{
   width:42px;height:42px;flex:none;
   display:grid;place-items:center;
-  border-radius:50%;
   font-weight:800;
+  background:transparent;
 }
 .target-icon{
   color:var(--blue);
@@ -105,7 +106,9 @@ button,input,select{font:inherit}
 }
 .actual-grid label:first-child{grid-column:1/-1}
 label{
-  display:block;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
   margin:12px 0 0;
   color:#efeff2;
   font-size:clamp(13px,3.25vw,18px);
@@ -342,9 +345,9 @@ select optgroup{
 
 
 .section-icon svg{width:100%;height:100%;display:block}
-.scales-icon{color:var(--blue);border-radius:12px;width:42px;height:42px;flex:none}
-.sonar-icon{color:#36d26f;width:42px;height:42px;flex:none;border-radius:50%;background:rgba(54,210,111,.08)}
-.stocks-icon{color:var(--purple);width:42px;height:42px;flex:none;background:transparent;padding:4px;}
+.scales-icon{color:var(--blue);width:42px;height:42px;flex:none;background:transparent}
+.sonar-icon{color:#36d26f;width:42px;height:42px;flex:none;background:transparent}
+.stocks-icon{color:var(--purple);width:42px;height:42px;flex:none;background:transparent;padding:4px}
 .gear-icon svg{width:38px;height:38px;display:block}
 
 
@@ -442,10 +445,10 @@ label > input,
     <div class="section-heading">
       <span class="section-icon scales-icon" aria-hidden="true">
         <svg viewBox="0 0 64 64">
-          <rect x="8" y="7" width="48" height="50" rx="12" fill="none" stroke="currentColor" stroke-width="4"/>
-          <path d="M20 22c5-7 19-7 24 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-          <path d="M32 21l5 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="32" cy="30" r="3" fill="currentColor"/>
+          <rect x="10" y="8" width="44" height="48" rx="10" fill="none" stroke="currentColor" stroke-width="4"/>
+          <path d="M22 24a10 10 0 0 1 20 0" fill="none" stroke="currentColor" stroke-width="3"/>
+          <path d="M32 24l6-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="32" cy="24" r="2.5" fill="currentColor"/>
         </svg>
       </span>
       <h2>Daily Inputs</h2>
@@ -780,10 +783,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-v31",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v1",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v31")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v1")||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
