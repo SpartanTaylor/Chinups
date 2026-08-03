@@ -84,7 +84,6 @@ button,input,select{font:inherit}
 .section-icon{
   width:42px;height:42px;flex:none;
   display:grid;place-items:center;
-  border-radius:50%;
   font-weight:800;
 }
 .target-icon{
@@ -342,9 +341,9 @@ select optgroup{
 
 
 .section-icon svg{width:100%;height:100%;display:block}
-.scales-icon{color:var(--blue);border-radius:12px;width:42px;height:42px;flex:none}
-.sonar-icon{color:#36d26f;width:42px;height:42px;flex:none;border-radius:50%;background:rgba(54,210,111,.08)}
-.stocks-icon{color:var(--purple);width:42px;height:42px;flex:none;border-radius:10px;background:rgba(211,60,255,.12);padding:4px}
+.scales-icon{color:var(--blue);width:42px;height:42px;flex:none;background:transparent}
+.sonar-icon{color:#36d26f;width:42px;height:42px;flex:none;background:transparent}
+.stocks-icon{color:var(--purple);width:42px;height:42px;flex:none;background:transparent;padding:4px}
 .gear-icon svg{width:38px;height:38px;display:block}
 
 </style>
@@ -702,10 +701,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v21",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v22",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v21")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v22")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
