@@ -1,4 +1,4 @@
-const CACHE="weighted-chinup-master-v7-icon-match";
+const CACHE="weighted-chinup-master-v8-unit-toggle";
 self.addEventListener("install",event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>

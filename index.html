@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>WEIGHTED CHINUP CALCULATOR</title>
-<!-- CANONICAL MASTER BUILD: master-v7-icon-match -->
+<!-- CANONICAL MASTER BUILD: master-v8-unit-toggle -->
 <style>
 :root{
   --bg:#09090a;
@@ -471,6 +471,42 @@ gap:10px;
   height:100%;
   display:block;
 }
+
+/* Unit + microplate controls */
+.options-toggle-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin:-2px 4px 8px;
+  flex-wrap:nowrap;
+}
+.unit-toggle-control,
+.micro-toggle-control{
+  display:inline-flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  gap:8px;
+}
+.unit-choice,
+.micro-toggle-text{
+  color:#f1f1f3;
+  font-size:15px;
+  font-weight:600;
+  line-height:31px;
+}
+.unit-toggle-control .ios-switch,
+.micro-toggle-control .ios-switch{
+  flex:0 0 51px;
+  margin:0;
+}
+@media(max-width:390px){
+  .options-toggle-row{gap:8px;margin-left:0;margin-right:0}
+  .unit-toggle-control,.micro-toggle-control{gap:6px}
+  .unit-choice,.micro-toggle-text{font-size:13px}
+}
+
 </style>
 </head>
 <body>
@@ -487,7 +523,15 @@ gap:10px;
       </svg>
     </button>
   </header>
-  <div class="micro-toggle-row">
+  <div class="options-toggle-row">
+    <div class="unit-toggle-control" aria-label="Weight units">
+      <span class="unit-choice">LB</span>
+      <label class="ios-switch" for="unitToggle">
+        <input id="unitToggle" type="checkbox">
+        <span class="ios-slider"></span>
+      </label>
+      <span class="unit-choice">KG</span>
+    </div>
     <div class="micro-toggle-control">
       <span class="micro-toggle-text">Microplates</span>
       <label class="ios-switch" for="microplatesToggle">
@@ -509,8 +553,8 @@ gap:10px;
       <h2>Daily Inputs</h2>
     </div>
     <div class="input-grid">
-      <label>Bodyweight (lbs)<input id="bw" type="number" step="0.1" inputmode="decimal"></label>
-      <label>Bodyweight + Belt (lbs)<input id="bwbelt" type="number" step="0.1" inputmode="decimal"></label>
+      <label><span>Bodyweight (<span class="unit-label">lbs</span>)</span><input id="bw" type="number" step="0.1" inputmode="decimal"></label>
+      <label><span>Bodyweight + Belt (<span class="unit-label">lbs</span>)</span><input id="bwbelt" type="number" step="0.1" inputmode="decimal"></label>
     </div>
   </section>
 
@@ -573,7 +617,7 @@ gap:10px;
     </div>
 
     <div class="input-grid actual-grid">
-      <label>Actual Added Weight (lbs)<input id="actualLoad" type="number" min="0" step="0.001" inputmode="decimal"></label>
+      <label><span>Actual Added Weight (<span class="unit-label">lbs</span>)</span><input id="actualLoad" type="number" min="0" step="0.001" inputmode="decimal"></label>
       <label>Actual Top Set Reps<input id="actualReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
       <label>Actual Top Set RIR / RPE<select id="actualRpe"></select></label>
     </div>
@@ -666,27 +710,60 @@ function fillSelect(id){
 }
 ["feelerRpe","targetRpe","actualRpe","backoffRpe"].forEach(fillSelect);
 
-// Inventory: unlimited larger plates, max 2 microplates each.
-const unlimited=[44,33,22,11,5.5,2.75];
-const micro=[2.2,1.1,0.55,0.275];
+// Unit-aware plate inventory. The app uses the user's fixed 2.2 lb = 1 kg mapping.
+const LB_PER_KG=2.2;
+const plateInventory={
+ lbs:{unlimited:[44,33,22,11,5.5,2.75],micro:[2.2,1.1,0.55,0.275]},
+ kg:{unlimited:[20,15,10,5,2.5,1.25],micro:[1,0.5,0.25,0.125]}
+};
+const platePairs=[
+ {lbs:44,kg:20},{lbs:33,kg:15},{lbs:22,kg:10},{lbs:11,kg:5},{lbs:5.5,kg:2.5},
+ {lbs:2.75,kg:1.25},{lbs:2.2,kg:1},{lbs:1.1,kg:0.5},{lbs:0.55,kg:0.25},{lbs:0.275,kg:0.125}
+];
+
+function currentUnit(){return document.getElementById("unitToggle")?.checked?"kg":"lbs"}
+function unitSuffix(){return currentUnit()==="kg"?"kg":"lbs"}
+function convertWeight(value,fromUnit,toUnit){
+ if(!Number.isFinite(value) || fromUnit===toUnit)return value;
+ return fromUnit==="lbs"?value/LB_PER_KG:value*LB_PER_KG;
+}
+function formatInputValue(value){
+ if(!Number.isFinite(value))return "";
+ return Number(value.toFixed(3)).toString();
+}
+function convertEnteredWeights(fromUnit,toUnit){
+ ["bw","bwbelt","actualLoad"].forEach(id=>{
+   const input=document.getElementById(id);
+   const value=parseFloat(input.value);
+   if(Number.isFinite(value))input.value=formatInputValue(convertWeight(value,fromUnit,toUnit));
+ });
+}
+function updateUnitLabels(){
+ const suffix=unitSuffix();
+ document.querySelectorAll(".unit-label").forEach(el=>el.textContent=suffix);
+}
 
 function plateCombo(target){
  target=Math.max(0,target);
- const T=Math.floor(target*1000+1e-7);
+ const unit=currentUnit();
+ const inventory=plateInventory[unit];
+ const scale=1000;
+ const T=Math.floor(target*scale+1e-7);
  let best=-1,bestCount=Infinity,bestVec=null;
-
  const microplatesOn=document.getElementById("microplatesToggle")?.checked ?? true;
  const microMax=microplatesOn?2:0;
+ const [m0,m1,m2,m3]=inventory.micro;
  for(let a=0;a<=microMax;a++)for(let b=0;b<=microMax;b++)for(let c=0;c<=microMax;c++)for(let d=0;d<=microMax;d++){
    const micros=[a,b,c,d];
-   const microSum=Math.round((a*2.2+b*1.1+c*.55+d*.275)*1000);
-   if(microSum>T) continue;
+   const microSum=Math.round((a*m0+b*m1+c*m2+d*m3)*scale);
+   if(microSum>T)continue;
    let rem=T-microSum;
    const counts=[];
    let n=0;
-   for(const p of unlimited){
-     const q=Math.floor(rem/Math.round(p*1000));
-     counts.push(q); n+=q; rem-=q*Math.round(p*1000);
+   for(const plate of inventory.unlimited){
+     const plateUnits=Math.round(plate*scale);
+     const q=Math.floor(rem/plateUnits);
+     counts.push(q);n+=q;rem-=q*plateUnits;
    }
    const total=T-rem;
    const vec=[...counts,...micros];
@@ -695,28 +772,18 @@ function plateCombo(target){
      best=total;bestCount=count;bestVec=vec;
    }
  }
- if(best<=0)return {total:0,lbs:"Bodyweight only",kg:"Bodyweight only",counts:[]};
-
- const lbs=[44,33,22,11,5.5,2.75,2.2,1.1,0.55,0.275];
- const kg=[20,15,10,5,2.5,1.25,1,0.5,0.25,0.125];
- const lbParts=[];
- const kgParts=[];
+ if(best<=0)return {total:0,counts:[]};
+ const denominations=[...inventory.unlimited,...inventory.micro];
  const counts=[];
-
  bestVec.forEach((n,i)=>{
    if(n>0){
-     lbParts.push(n===1?`${lbs[i]}`:`${n} × ${lbs[i]}`);
-     kgParts.push(n===1?`${kg[i]}`:`${n} × ${kg[i]}`);
-     counts.push({count:n,lbs:lbs[i],kg:kg[i]});
+     const pair=unit==="lbs"
+       ? platePairs.find(x=>x.lbs===denominations[i])
+       : platePairs.find(x=>x.kg===denominations[i]);
+     counts.push({count:n,lbs:pair.lbs,kg:pair.kg,display:denominations[i]});
    }
  });
-
- return {
-   total:best/1000,
-   lbs:lbParts.join(" + "),
-   kg:kgParts.join(" + "),
-   counts
- };
+ return {total:best/scale,counts};
 }
 function pct(reps,rpe){
  if(!chart[reps])return null;
@@ -748,25 +815,25 @@ const plateStyles={
 
 function plateVisual(load){
  if(!load.counts || load.counts.length===0)return "";
-
+ const unit=currentUnit();
+ const suffix=unitSuffix();
  const blocks=[];
  load.counts.forEach(item=>{
    const style=plateStyles[String(item.lbs)]||{height:68,width:36,color:"#555"};
+   const label=unit==="kg"?item.kg:item.lbs;
    for(let i=0;i<item.count;i++){
-     blocks.push(`<div class="plate-block" style="height:${style.height}px;width:${style.width}px;background:${style.color}"><span>${item.lbs}</span></div>`);
+     blocks.push(`<div class="plate-block" style="height:${style.height}px;width:${style.width}px;background:${style.color}"><span>${label}</span></div>`);
    }
  });
-
- const kgTotal=load.total/2.2;
  return `<div class="plate-visual">
    <div class="visual-set">
-     <div class="visual-heading"><span>Plates to use (lbs)</span></div>
+     <div class="visual-heading"><span>Plates to use (${suffix})</span></div>
      <div class="belt-stage">
        <div class="belt-wrap"><div class="belt-strap"></div><div class="belt-loop"></div></div>
        <div class="plate-stack">${blocks.join("")}</div>
        <div class="chain"></div>
      </div>
-     <div class="visual-total">Total: <strong>${load.total.toFixed(2)}</strong> lbs&nbsp;&nbsp;(<strong>${kgTotal.toFixed(2)}</strong> kg)</div>
+     <div class="visual-total">Total: <strong>${load.total.toFixed(2)}</strong> ${suffix}</div>
    </div>
  </div>`;
 }
@@ -806,12 +873,13 @@ async function copyOutput(button,text){
 }
 
 function recommendationOutput(targetLabel,targetTotal,exactAdded,load,bwbelt){
+ const suffix=unitSuffix();
  return `<div class="output-group">
-   ${outputRow(targetLabel,`${targetTotal.toFixed(2)} lbs`,false,false)}
-   ${outputRow("Exact added weight required",`${Math.max(0,exactAdded).toFixed(2)} lbs`)}
+   ${outputRow(targetLabel,`${targetTotal.toFixed(2)} ${suffix}`,false,false)}
+   ${outputRow("Exact added weight required",`${Math.max(0,exactAdded).toFixed(2)} ${suffix}`)}
    <div class="output-divider"></div>
-   ${outputRow("Suggested weight (load on belt)",`${load.total.toFixed(2)} lbs`,true,true,true)}
-   ${outputRow("Actual total weight (achievable)",`${(bwbelt+load.total).toFixed(2)} lbs`,true,true,true)}
+   ${outputRow("Suggested weight (load on belt)",`${load.total.toFixed(2)} ${suffix}`,true,true,true)}
+   ${outputRow("Actual total weight (achievable)",`${(bwbelt+load.total).toFixed(2)} ${suffix}`,true,true,true)}
    ${plateVisual(load)}
  </div>`;
 }
@@ -854,7 +922,7 @@ function recalc(){
  if(ap && bwbelt>0 && !isNaN(al)){
    const actualTotal=bwbelt+al;
    const e1rm=actualTotal/ap;
-   eText=`<div class="output-group">${outputRow("Daily e1RM",`${e1rm.toFixed(2)} lbs`,true,true,true)}</div>`;
+   eText=`<div class="output-group">${outputRow("Daily e1RM",`${e1rm.toFixed(2)} ${unitSuffix()}`,true,true,true)}</div>`;
    setResult("e1rmOutput",eText);
 
    const br=parseInt(document.getElementById("backoffReps").value);
@@ -877,19 +945,32 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v7-icon-match",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v8-unit-toggle",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v7-icon-match")||"{}");
+const storageKey="weighted-chinup-master-v8-unit-toggle";
+const previousKey="weighted-chinup-master-v7-icon-match";
+const saved=JSON.parse(localStorage.getItem(storageKey)||localStorage.getItem(previousKey)||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
  if(e.type==="checkbox")e.checked=Boolean(v);
  else e.value=v;
 });
+updateUnitLabels();
+
 document.querySelectorAll("input,select").forEach(e=>{
+ if(e.id==="unitToggle")return;
  e.addEventListener("input",recalc);
  e.addEventListener("change",recalc);
+});
+let lastUnit=currentUnit();
+document.getElementById("unitToggle").addEventListener("change",()=>{
+ const nextUnit=currentUnit();
+ convertEnteredWeights(lastUnit,nextUnit);
+ lastUnit=nextUnit;
+ updateUnitLabels();
+ recalc();
 });
 recalc();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
