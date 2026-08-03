@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>WEIGHTED CHINUP CALCULATOR</title>
-<!-- CANONICAL MASTER BUILD: master-v9-lbs-label -->
+<!-- CANONICAL MASTER BUILD: master-v10-sticky-toolbar -->
 <style>
 :root{
   --bg:#09090a;
@@ -507,23 +507,96 @@ gap:10px;
   .unit-choice,.micro-toggle-text{font-size:13px}
 }
 
+
+/* MASTER v10 sticky controls toolbar */
+.title-header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:72px;
+  padding:0 8px;
+}
+.sticky-toolbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:grid;
+  grid-template-columns:44px auto 1fr 44px;
+  align-items:center;
+  gap:10px;
+  min-height:56px;
+  margin:0 -8px 10px;
+  padding:calc(6px + env(safe-area-inset-top,0px)) 10px 6px;
+  background:rgba(12,12,13,.82);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);
+  backdrop-filter:blur(18px) saturate(150%);
+  border-top:1px solid rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
+}
+.toolbar-icon{
+  width:40px;
+  height:40px;
+  min-width:40px;
+}
+.sticky-toolbar .unit-toggle-control{justify-self:start}
+.sticky-toolbar .micro-toggle-control{justify-self:end}
+.sticky-toolbar .unit-choice,
+.sticky-toolbar .micro-toggle-text{font-size:13px}
+.sticky-toolbar .ios-switch{
+  width:45px;
+  height:27px;
+}
+.sticky-toolbar .ios-slider::before{
+  width:23px;
+  height:23px;
+  left:2px;
+  top:2px;
+}
+.sticky-toolbar .ios-switch input:checked + .ios-slider::before{
+  transform:translateX(18px);
+}
+.sticky-toolbar .gear-icon svg{
+  width:32px;
+  height:32px;
+}
+@media(max-width:430px){
+  .sticky-toolbar{
+    grid-template-columns:38px auto 1fr 38px;
+    gap:6px;
+    padding-left:6px;
+    padding-right:6px;
+  }
+  .sticky-toolbar .unit-toggle-control,
+  .sticky-toolbar .micro-toggle-control{gap:5px}
+  .sticky-toolbar .unit-choice,
+  .sticky-toolbar .micro-toggle-text{font-size:12px}
+  .sticky-toolbar .ios-switch{
+    width:41px;
+    height:25px;
+  }
+  .sticky-toolbar .ios-slider::before{
+    width:21px;
+    height:21px;
+  }
+  .sticky-toolbar .ios-switch input:checked + .ios-slider::before{
+    transform:translateX(16px);
+  }
+}
+
 </style>
 </head>
 <body>
 <main class="app-shell">
-  <header class="app-bar">
-    <button class="nav-icon" type="button" aria-label="Menu">
+  <header class="title-header">
+    <div class="app-title">WEIGHTED CHINUP CALCULATOR</div>
+  </header>
+
+  <div class="sticky-toolbar" role="toolbar" aria-label="Calculator controls">
+    <button class="nav-icon toolbar-icon" type="button" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
-    <div class="app-title">WEIGHTED CHINUP CALCULATOR</div>
-    <button class="gear-icon" type="button" aria-label="Settings">
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M27 4h10l2 8a23 23 0 0 1 5 2l7-4 7 7-4 7a23 23 0 0 1 2 5l8 2v10l-8 2a23 23 0 0 1-2 5l4 7-7 7-7-4a23 23 0 0 1-5 2l-2 8H27l-2-8a23 23 0 0 1-5-2l-7 4-7-7 4-7a23 23 0 0 1-2-5l-8-2V31l8-2a23 23 0 0 1 2-5l-4-7 7-7 7 4a23 23 0 0 1 5-2z" fill="currentColor"/>
-        <circle cx="32" cy="36" r="10" fill="#09090a"/>
-      </svg>
-    </button>
-  </header>
-  <div class="options-toggle-row">
+
     <div class="unit-toggle-control" aria-label="Weight units">
       <span class="unit-choice">LBS</span>
       <label class="ios-switch" for="unitToggle">
@@ -532,6 +605,7 @@ gap:10px;
       </label>
       <span class="unit-choice">KG</span>
     </div>
+
     <div class="micro-toggle-control">
       <span class="micro-toggle-text">Microplates</span>
       <label class="ios-switch" for="microplatesToggle">
@@ -539,6 +613,13 @@ gap:10px;
         <span class="ios-slider"></span>
       </label>
     </div>
+
+    <button class="gear-icon toolbar-icon" type="button" aria-label="Settings">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M27 4h10l2 8a23 23 0 0 1 5 2l7-4 7 7-4 7a23 23 0 0 1 2 5l8 2v10l-8 2a23 23 0 0 1-2 5l4 7-7 7-7-4a23 23 0 0 1-5 2l-2 8H27l-2-8a23 23 0 0 1-5-2l-7 4-7-7 4-7a23 23 0 0 1-2-5l-8-2V31l8-2a23 23 0 0 1 2-5l-4-7 7-7 7 4a23 23 0 0 1 5-2z" fill="currentColor"/>
+        <circle cx="32" cy="36" r="10" fill="#09090a"/>
+      </svg>
+    </button>
   </div>
 <section class="app-card daily-card">
     <div class="section-heading">
@@ -945,10 +1026,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v9-lbs-label",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v10-sticky-toolbar",JSON.stringify(data));
 }
 
-const storageKey="weighted-chinup-master-v9-lbs-label";
+const storageKey="weighted-chinup-master-v10-sticky-toolbar";
 const previousKey="weighted-chinup-master-v7-icon-match";
 const saved=JSON.parse(localStorage.getItem(storageKey)||localStorage.getItem(previousKey)||"{}");
 Object.entries(saved).forEach(([k,v])=>{

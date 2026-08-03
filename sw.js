@@ -1,4 +1,4 @@
-const CACHE="weighted-chinup-master-v9-lbs-label";
+const CACHE="weighted-chinup-master-v10-sticky-toolbar";
 self.addEventListener("install",event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>
