@@ -386,13 +386,31 @@ select optgroup{
     <div class="section-heading">
       <span class="section-icon sonar-icon" aria-hidden="true">
         <svg viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="3"/>
-          <circle cx="32" cy="32" r="18" fill="none" stroke="currentColor" stroke-width="2" opacity=".7"/>
-          <circle cx="32" cy="32" r="9" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/>
-          <path d="M32 32L54 18A26 26 0 0 1 57 32Z" fill="currentColor" opacity=".28"/>
-          <path d="M32 32L54 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="45" cy="23" r="3.5" fill="currentColor"/>
-          <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
+          <defs>
+            <linearGradient id="radarSweepFade" x1="32" y1="32" x2="54" y2="18" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="currentColor" stop-opacity=".05"/>
+              <stop offset=".55" stop-color="currentColor" stop-opacity=".18"/>
+              <stop offset="1" stop-color="currentColor" stop-opacity=".55"/>
+            </linearGradient>
+            <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="currentColor" stop-opacity=".9"/>
+              <stop offset=".45" stop-color="currentColor" stop-opacity=".35"/>
+              <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <circle cx="32" cy="32" r="27" fill="rgba(54,210,111,.06)" stroke="currentColor" stroke-width="3.2"/>
+          <circle cx="32" cy="32" r="19" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".52"/>
+          <circle cx="32" cy="32" r="11" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".42"/>
+
+          <path d="M32 32L54 18A27 27 0 0 1 58 32Z" fill="url(#radarSweepFade)"/>
+          <path d="M32 32L54 18" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+
+          <circle cx="18" cy="23" r="6" fill="url(#radarGlow)"/>
+          <circle cx="18" cy="23" r="2.4" fill="currentColor"/>
+          <circle cx="46" cy="40" r="5.2" fill="url(#radarGlow)"/>
+          <circle cx="46" cy="40" r="2.2" fill="currentColor"/>
+          <circle cx="32" cy="32" r="2.7" fill="currentColor"/>
         </svg>
       </span>
       <h2>Feeler Set → Top Set Recommendation</h2>
@@ -684,10 +702,10 @@ function recalc(){
 
  const data={};
  document.querySelectorAll("input,select").forEach(x=>data[x.id]=x.value);
- localStorage.setItem("weighted-chinup-v20",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-v21",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-v20")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-v21")||"{}");
 Object.entries(saved).forEach(([k,v])=>{const e=document.getElementById(k);if(e)e.value=v});
 document.querySelectorAll("input,select").forEach(e=>{e.addEventListener("input",recalc);e.addEventListener("change",recalc);});
 recalc();
