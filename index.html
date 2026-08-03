@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>WEIGHTED CHINUP CALCULATOR</title>
-<!-- CANONICAL MASTER BUILD: master-v8-unit-toggle -->
+<!-- CANONICAL MASTER BUILD: master-v9-lbs-label -->
 <style>
 :root{
   --bg:#09090a;
@@ -525,7 +525,7 @@ gap:10px;
   </header>
   <div class="options-toggle-row">
     <div class="unit-toggle-control" aria-label="Weight units">
-      <span class="unit-choice">LB</span>
+      <span class="unit-choice">LBS</span>
       <label class="ios-switch" for="unitToggle">
         <input id="unitToggle" type="checkbox">
         <span class="ios-slider"></span>
@@ -945,10 +945,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v8-unit-toggle",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v9-lbs-label",JSON.stringify(data));
 }
 
-const storageKey="weighted-chinup-master-v8-unit-toggle";
+const storageKey="weighted-chinup-master-v9-lbs-label";
 const previousKey="weighted-chinup-master-v7-icon-match";
 const saved=JSON.parse(localStorage.getItem(storageKey)||localStorage.getItem(previousKey)||"{}");
 Object.entries(saved).forEach(([k,v])=>{
