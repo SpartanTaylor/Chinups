@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
 <title>WEIGHTED CHINUP CALCULATOR</title>
-<!-- CANONICAL MASTER BUILD: master-v5-final -->
+<!-- CANONICAL MASTER BUILD: master-v6-split-sections -->
 <style>
 :root{
   --bg:#09090a;
@@ -464,6 +464,18 @@ gap:10px;
   line-height:1.35;
 }
 
+
+.cooldown-icon{
+  width:42px;
+  height:42px;
+  flex:none;
+  background:transparent;
+}
+.cooldown-icon svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
 </style>
 </head>
 <body>
@@ -562,7 +574,7 @@ gap:10px;
           <path d="M45 6h9v9" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </span>
-      <h2>Actual Top Set → Backoff Recommendation</h2>
+      <h2>Top Set</h2>
     </div>
 
     <div class="input-grid actual-grid">
@@ -572,8 +584,22 @@ gap:10px;
     </div>
 
     <div class="result integrated-result compact-result" id="e1rmOutput">Enter your actual top set.</div>
+  </section>
 
-    <div class="section-rule"></div>
+  <section class="app-card">
+    <div class="section-heading">
+      <span class="section-icon cooldown-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 8v48M7 18l42 28M7 46l42-28M16 12l8 6 8-6M16 52l8-6 8 6M8 26l9-1-1-9M40 48l-1-9 9 1M8 38l9 1-1 9M40 16l-1 9 9-1"
+                  stroke="#ffffff" stroke-width="4"/>
+            <path d="M40 18h15M43 29h12M40 40h15"
+                  stroke="#2f8cff" stroke-width="4"/>
+          </g>
+        </svg>
+      </span>
+      <h2>Backoffs/ Cooldowns</h2>
+    </div>
 
     <div class="input-grid">
       <label>Backoff Reps<input id="backoffReps" type="number" min="1" max="12" step="1" inputmode="numeric"></label>
@@ -834,10 +860,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v5-final",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v6-split-sections",JSON.stringify(data));
 }
 
-const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v5-final")||"{}");
+const saved=JSON.parse(localStorage.getItem("weighted-chinup-master-v6-split-sections")||"{}");
 Object.entries(saved).forEach(([k,v])=>{
  const e=document.getElementById(k);
  if(!e)return;
