@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
 <title>WEIGHTED CHINUP CALCULATOR</title>
-<!-- CANONICAL MASTER BUILD: master-v10-sticky-toolbar -->
+<!-- CANONICAL MASTER BUILD: master-v11-app-icon -->
 <style>
 :root{
   --bg:#09090a;
@@ -1026,10 +1030,10 @@ function recalc(){
  document.querySelectorAll("input,select").forEach(x=>{
    data[x.id]=x.type==="checkbox"?x.checked:x.value;
  });
- localStorage.setItem("weighted-chinup-master-v10-sticky-toolbar",JSON.stringify(data));
+ localStorage.setItem("weighted-chinup-master-v11-app-icon",JSON.stringify(data));
 }
 
-const storageKey="weighted-chinup-master-v10-sticky-toolbar";
+const storageKey="weighted-chinup-master-v11-app-icon";
 const previousKey="weighted-chinup-master-v7-icon-match";
 const saved=JSON.parse(localStorage.getItem(storageKey)||localStorage.getItem(previousKey)||"{}");
 Object.entries(saved).forEach(([k,v])=>{

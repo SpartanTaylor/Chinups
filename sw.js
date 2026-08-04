@@ -1,8 +1,8 @@
-const CACHE="weighted-chinup-master-v10-sticky-toolbar";
+const CACHE="weighted-chinup-master-v11-app-icon";
 self.addEventListener("install",event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>
-    cache.addAll(["./","./index.html","./manifest.json"])
+    cache.addAll(["./","./index.html","./manifest.json","./apple-touch-icon.png","./icon-192.png","./icon-512.png"])
   ));
 });
 self.addEventListener("activate",event=>{
